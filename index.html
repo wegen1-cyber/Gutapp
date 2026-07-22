@@ -85,6 +85,23 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 /* ── STATS / GENERAL ───────────────────────────────────── */
 .ziel-banner{background:var(--green-light);border-left:4px solid var(--green);border-radius:12px;padding:11px 14px;margin-bottom:12px;font-size:14px;color:var(--green)}
 .apikey-hint{display:flex;align-items:center;gap:11px;background:var(--purple-light);border-left:4px solid var(--purple);border-radius:12px;padding:11px 12px;margin-bottom:12px;cursor:pointer}
+.focus-hint{background:var(--orange-light);border-left-color:var(--orange)}
+.focus-hint .apikey-hint-text strong{color:var(--orange)}
+.focus-hint .apikey-hint-arrow{color:var(--orange)}
+.targets-table{width:100%;border-collapse:collapse;font-size:11.5px}
+.targets-table th{text-align:left;font-weight:700;color:var(--gray-dark);padding:5px 6px;border-bottom:1.5px solid var(--gray);font-size:9.5px;text-transform:uppercase;letter-spacing:.3px}
+.targets-table td{padding:7px 6px;border-bottom:1px solid var(--gray);color:var(--text)}
+.targets-table tr:last-child td{border-bottom:none}
+.nutrient-row{padding:10px 0;border-bottom:1px solid var(--gray)}
+.nutrient-row:last-child{border-bottom:none}
+.nutrient-row-top{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:6px}
+.nutrient-name{font-size:13px;font-weight:700;color:var(--text)}
+.nutrient-value{font-size:12px;font-weight:700;white-space:nowrap}
+.nutrient-tip{font-size:11.5px;color:var(--gray-dark);margin-top:6px;line-height:1.4}
+.nutrient-gauge{height:9px;border-radius:5px;background:var(--gray);overflow:hidden;position:relative}
+.nutrient-gauge-fill{height:100%;border-radius:5px;transition:width .4s ease}
+.nutrient-streak-row{display:flex;align-items:center;gap:8px;background:var(--orange-light);border-radius:12px;padding:9px 12px;margin-top:12px;font-size:12.5px;font-weight:700;color:var(--orange)}
+.nutrient-streak-flame{font-size:17px}
 .apikey-hint-icon{font-size:22px;flex-shrink:0}
 .apikey-hint-text{font-size:12px;line-height:1.5;color:var(--text);flex:1}
 .apikey-hint-text strong{color:var(--purple);font-size:13px}
@@ -338,6 +355,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
 .empty{text-align:center;padding:28px 20px;color:var(--gray-dark)}
 .mahlzeiten-card{cursor:pointer;transition:transform .1s}
+.next-meal-badge{font-size:11px;font-weight:700;text-transform:none;letter-spacing:0;padding:5px 10px;border-radius:20px;white-space:nowrap;font-family:'Inter',-apple-system,sans-serif}
+.next-meal-badge.upcoming{background:var(--green-light);color:var(--green)}
+.next-meal-badge.overdue{background:var(--red-light);color:var(--red)}
+.next-meal-badge.done{background:var(--gray);color:var(--gray-dark)}
 .mahlzeiten-card:active{transform:scale(.985)}
 .mahlzeiten-card .empty{border:2px dashed #d8d8d8;border-radius:var(--radius-sm);background:var(--gray)}
 .mahlzeiten-card .empty strong{color:var(--green)}
@@ -386,6 +407,9 @@ textarea.form-input{min-height:68px;resize:none}
 .akt-editor-icon{width:38px;height:38px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .akt-editor-title{font-size:15px;font-weight:800;color:var(--text)}
 .akt-row{display:flex;align-items:center;gap:11px;background:#fff;border-radius:var(--radius-sm);padding:9px 12px;margin-top:8px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .1s}
+.supp-drag-row{cursor:grab;user-select:none;-webkit-user-select:none}
+.supp-drag-handle{font-size:15px;color:var(--gray-dark);opacity:.5;flex-shrink:0;cursor:grab}
+.supp-drag-row.dragging{box-shadow:0 8px 20px rgba(0,0,0,.18);opacity:.92;position:relative;z-index:20;background:#fff;cursor:grabbing;transition:none}
 .akt-row:active{transform:scale(.98)}
 .akt-row-icon{width:36px;height:36px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
 .akt-row-info{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
@@ -614,6 +638,12 @@ textarea.form-input{min-height:68px;resize:none}
     <span class="apikey-hint-arrow">›</span>
   </div>
 
+  <div id="nutrientFocusBanner" class="apikey-hint focus-hint" style="display:none" onclick="showScreen('profil')">
+    <span class="apikey-hint-icon">🎯</span>
+    <span class="apikey-hint-text"><strong>Fokus heute</strong><br><span id="nutrientFocusText"></span></span>
+    <span class="apikey-hint-arrow">›</span>
+  </div>
+
 
   <div class="section-header" style="margin-top:4px"><span>🌅 Überblick</span></div>
   <!-- TAGESVERLAUF-ZEITLEISTE -->
@@ -660,7 +690,10 @@ textarea.form-input{min-height:68px;resize:none}
   <div class="section-header"><span>🍽 Ernährung &amp; Trinken</span></div>
   <!-- MAHLZEITEN -->
   <div class="card mahlzeiten-card" onclick="handleMahlzeitenCardClick(event)">
-    <div class="card-title">🍽 Mahlzeiten</div>
+    <div class="card-title" style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
+      <span>🍽 Mahlzeiten</span>
+      <span class="next-meal-badge" id="nextMealBadge"></span>
+    </div>
     <div id="todayEntries"></div>
   </div>
 
@@ -725,13 +758,16 @@ textarea.form-input{min-height:68px;resize:none}
       </label>
     </div>
     <div class="toggle-card-body" id="supplementsBody">
-      <div class="akt-grid" id="supplementChipRow" style="margin-top:10px">
-        <button class="akt-tile" data-supp="🧪 Kreatin" onclick="toggleSupplementPick(this)"><span class="akt-tile-icon">🧪</span><span class="akt-tile-label">Kreatin</span><span class="akt-tile-check">✓</span></button>
-        <button class="akt-tile" data-supp="🧂 Magnesium" onclick="toggleSupplementPick(this)"><span class="akt-tile-icon">🧂</span><span class="akt-tile-label">Magnesium</span><span class="akt-tile-check">✓</span></button>
-        <button class="akt-tile" data-supp="💊 Vitamine" onclick="toggleSupplementPick(this)"><span class="akt-tile-icon">💊</span><span class="akt-tile-label">Vitamine</span><span class="akt-tile-check">✓</span></button>
-        <button class="akt-tile" data-supp="⚡ Zink" onclick="toggleSupplementPick(this)"><span class="akt-tile-icon">⚡</span><span class="akt-tile-label">Zink</span><span class="akt-tile-check">✓</span></button>
-      </div>
+      <div class="akt-grid" id="supplementChipRow" style="margin-top:10px"></div>
       <div style="font-size:10.5px;color:var(--gray-dark);margin-top:6px">Mehrere gleichzeitig antippen, falls zusammen eingenommen</div>
+      <button type="button" class="btn-secondary" style="background:var(--gray);color:var(--gray-dark);margin-top:9px" onclick="toggleSuppManagePanel()">⚙️ Supplements verwalten</button>
+      <div id="suppManagePanel" style="display:none;margin-top:10px">
+        <div id="suppManageList"></div>
+        <div style="display:flex;gap:7px;margin-top:8px">
+          <input type="text" class="form-input" id="suppNewName" placeholder="z.B. 🐟 Fischöl">
+          <button type="button" class="counter-btn" style="width:38px;height:38px;font-size:20px" onclick="addSupplementType()">＋</button>
+        </div>
+      </div>
       <div class="akt-editor" id="suppEditor" style="display:none"></div>
       <div id="supplementsList"></div>
     </div>
@@ -903,6 +939,32 @@ textarea.form-input{min-height:68px;resize:none}
 
   <div id="weekView"></div>
 
+  <!-- STATISTIKEN / ERNÄHRUNGSZIELE — Gauges + Gamification -->
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">📊 Statistiken — Ernährungsziele</div>
+    <table class="targets-table">
+      <thead><tr><th>Ziel</th><th>Wert</th><th>Frequenz</th></tr></thead>
+      <tbody>
+        <tr><td>Protein</td><td>1,6–2,4 g/kg Körpergewicht</td><td>täglich</td></tr>
+        <tr><td>Ballaststoffe</td><td>mind. 30 g</td><td>täglich</td></tr>
+        <tr><td>Pflanzenvielfalt</td><td>30+ verschiedene</td><td>wöchentlich</td></tr>
+        <tr><td>Wasser</td><td>35–40 ml/kg + Trainingsverlust</td><td>täglich</td></tr>
+        <tr><td>Omega-3</td><td>1–2 g EPA/DHA</td><td>täglich</td></tr>
+        <tr><td>Carbs (KH)</td><td id="carbTargetCell">Gewicht im Profil hinterlegen</td><td>täglich</td></tr>
+      </tbody>
+    </table>
+    <div style="font-size:11px;color:var(--gray-dark);margin:10px 0">Fehlen exakte Mengenangaben aus deinen Einträgen, schätzt die KI realistisch anhand der geloggten Lebensmittel und Portionen.</div>
+    <button class="btn-secondary" style="background:var(--green-light);color:var(--green)" onclick="analyzeNutrientTargets()">🔄 Heute schätzen</button>
+    <div id="nutrientStatsBody" style="margin-top:12px"></div>
+
+    <div class="nutrient-streak-row" id="nutrientStreakRow" style="display:none">
+      <span class="nutrient-streak-flame">🔥</span>
+      <span id="nutrientStreakText">0 Tage Ziel-Streak</span>
+    </div>
+    <div class="gutty-badges-label" style="margin-top:14px">🏅 Ziel-Abzeichen</div>
+    <div class="gutty-badges-grid" id="nutrientBadgesGrid"></div>
+  </div>
+
   <!-- GUTTY MASKOTTCHEN -->
   <div class="card gutty-card" style="margin-top:12px">
     <div class="gutty-row">
@@ -1001,6 +1063,17 @@ textarea.form-input{min-height:68px;resize:none}
     <div class="profile-field"><label class="form-label">Ziel</label><input type="text" class="form-input" id="profileZiel" placeholder="z.B. Mehr Gemüse, weniger Zucker…" oninput="saveProfile()"></div>
     <div class="profile-field"><label class="form-label">Zeitraum</label><input type="text" class="form-input" id="profileZeitraum" placeholder="z.B. 01.06. – 07.06.2026" oninput="saveProfile()"></div>
   </div>
+
+  <!-- GEWICHT & CARB-ZIEL -->
+  <div class="card">
+    <div class="card-title" style="color:var(--orange)">⚖️ Gewicht &amp; Carb-Ziel</div>
+    <div class="time-field-row">
+      <div><label class="form-label" style="font-size:10px">Aktuelles Gewicht (kg)</label><input type="number" step="0.1" min="0" class="form-input" id="profileCurrentWeight" placeholder="z.B. 78" oninput="saveWeightGoals()"></div>
+      <div><label class="form-label" style="font-size:10px">Zielgewicht (kg)</label><input type="number" step="0.1" min="0" class="form-input" id="profileTargetWeight" placeholder="z.B. 76" oninput="saveWeightGoals()"></div>
+    </div>
+    <div style="font-size:11px;color:var(--gray-dark);margin-top:9px;line-height:1.6" id="carbTargetExplain">Trag beide Gewichte ein, dann berechnet die App dir ein passendes tägliches Kohlenhydrat-Ziel (unter "Woche" → Statistiken sichtbar).</div>
+  </div>
+
 
   <!-- KI FOTO-ANALYSE -->
   <div class="card">
@@ -1108,7 +1181,13 @@ textarea.form-input{min-height:68px;resize:none}
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">⏰ Uhrzeit</label>
-        <input type="time" class="form-input" id="inputTime">
+        <input type="hidden" id="inputTime">
+        <div class="mini-wheel-wrap" style="margin:0 auto;width:-webkit-fit-content;width:fit-content">
+          <div class="mini-wheel" id="mealWheelH" onscroll="onMealWheelScroll('hour')" onclick="onMealWheelClick(event,'mealWheelH')"></div>
+          <div class="mini-wheel-colon">:</div>
+          <div class="mini-wheel" id="mealWheelM" onscroll="onMealWheelScroll('minute')" onclick="onMealWheelClick(event,'mealWheelM')"></div>
+          <div class="mini-wheel-highlight"></div>
+        </div>
       </div>
       <div class="form-group">
         <label class="form-label">Mahlzeit / Typ</label>
@@ -1137,7 +1216,7 @@ textarea.form-input{min-height:68px;resize:none}
           <label class="form-label" style="margin-bottom:0">🍽 Speisen &amp; Menge</label>
           <button type="button" class="ft-toggle-btn" id="foodTableToggleBtn" onclick="toggleFoodTableMode()">📋 Tabellarisch eintragen</button>
         </div>
-        <textarea class="form-input" id="inputFood" placeholder="z.B. 2 Scheiben Vollkornbrot…" rows="3" oninput="onFoodInputChange(this)"></textarea>
+        <textarea class="form-input" id="inputFood" placeholder="z.B. 2 Scheiben Vollkornbrot…" rows="3" oninput="onFoodInputChange(this)" onfocus="showFoodSuggestions(this.value)"></textarea>
         <div class="food-suggestions" id="foodSuggestions"></div>
         <div id="foodTableWrap" style="display:none">
           <div id="foodTableRows"></div>
@@ -1550,6 +1629,7 @@ window.onload=function(){
   applyHealthStatsVisibility();
   applyKaffeeCardVisibility();
   applySupplementsVisibility();
+  checkYesterdayFocus();
   applyReminderToggleState();
   checkReminders();
   renderFoodMemoryList();
@@ -1560,7 +1640,7 @@ window.onload=function(){
 };
 function setTimeNow(){
   const t=nowTime();
-  document.getElementById('inputTime').value=t;
+  setMealWheelTime(t);
   document.getElementById('stoolTime').value=t;
 }
 
@@ -1572,7 +1652,7 @@ function showScreen(name){
   document.getElementById('nav-'+name).classList.add('active');
   document.getElementById('fab').style.display=name==='profil'?'none':'flex';
   document.getElementById('dateNav').style.visibility=name==='heute'?'visible':'hidden';
-  if(name==='woche'){ renderWeek(); renderCalendar(); renderGutty(); }
+  if(name==='woche'){ renderWeek(); renderCalendar(); renderGutty(); renderNutrientStats(); }
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -1823,6 +1903,46 @@ function onSleepWheelClick(e,id){
   const which=id.includes('Start')?'start':'end';
   clearTimeout(sleepWheelScrollTimer);
   sleepWheelScrollTimer=setTimeout(()=>commitSleepWheelValue(which),150);
+}
+// ── ZEIT-RAD FÜR MAHLZEITEN — exakt dieselbe Komponente wie bei Schlafphasen ──
+let mealWheelScrollTimer=null;
+function setMealWheelTime(val){
+  const useVal=val||nowTime();
+  buildMiniWheel('mealWheelH',24);
+  buildMiniWheel('mealWheelM',60);
+  const [hh,mm]=useVal.split(':').map(Number);
+  setTimeout(()=>{
+    setMiniWheelValue('mealWheelH',hh||0,false);
+    setMiniWheelValue('mealWheelM',mm||0,false);
+  },0);
+  const hidden=document.getElementById('inputTime');
+  if(hidden) hidden.value=useVal;
+}
+function onMealWheelScroll(unit){
+  const id=unit==='hour'?'mealWheelH':'mealWheelM';
+  const el=document.getElementById(id);
+  if(!el) return;
+  const idx=Math.round(el.scrollTop/MW_ITEM_H);
+  highlightMiniWheel(id,idx);
+  clearTimeout(mealWheelScrollTimer);
+  mealWheelScrollTimer=setTimeout(commitMealWheelValue,120);
+}
+function onMealWheelClick(e,id){
+  const item=e.target.closest('.mini-wheel-item');
+  if(!item) return;
+  const idx=parseInt(item.dataset.v);
+  setMiniWheelValue(id,idx,true);
+  clearTimeout(mealWheelScrollTimer);
+  mealWheelScrollTimer=setTimeout(commitMealWheelValue,150);
+}
+function commitMealWheelValue(){
+  const hEl=document.getElementById('mealWheelH'), mEl=document.getElementById('mealWheelM');
+  if(!hEl||!mEl) return;
+  const hh=Math.max(0,Math.round(hEl.scrollTop/MW_ITEM_H));
+  const mm=Math.max(0,Math.round(mEl.scrollTop/MW_ITEM_H));
+  const val=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
+  const hidden=document.getElementById('inputTime');
+  if(hidden) hidden.value=val;
 }
 function commitSleepWheelValue(which){
   if(!sleepEditorState) return;
@@ -2150,6 +2270,138 @@ function saveAktivitaetText(){
 }
 
 // ── SUPPLEMENTS: mehrere gleichzeitig antippen → gemeinsame Uhrzeit → speichern ──
+const DEFAULT_SUPPLEMENT_TYPES=['🧪 Kreatin','🧂 Magnesium','💊 Vitamine','⚡ Zink','🐟 Omega-3'];
+function getSupplementTypes(){
+  if(!db.supplementTypes||!db.supplementTypes.length){ db.supplementTypes=DEFAULT_SUPPLEMENT_TYPES.slice(); save(); }
+  return db.supplementTypes;
+}
+function renderSupplementTiles(){
+  const row=document.getElementById('supplementChipRow');
+  if(!row) return;
+  const types=getSupplementTypes();
+  row.innerHTML=types.map(t=>{
+    const parts=t.split(' ');
+    const icon=parts[0], label=parts.slice(1).join(' ');
+    return `<button class="akt-tile" data-supp="${t.replace(/"/g,'&quot;')}" onclick="toggleSupplementPick(this)"><span class="akt-tile-icon">${icon}</span><span class="akt-tile-label">${label}</span><span class="akt-tile-check">✓</span></button>`;
+  }).join('');
+}
+function toggleSuppManagePanel(){
+  const panel=document.getElementById('suppManagePanel');
+  if(!panel) return;
+  const opening=panel.style.display==='none';
+  panel.style.display=opening?'block':'none';
+  if(opening) renderSuppManageList();
+}
+function renderSuppManageList(){
+  const list=document.getElementById('suppManageList');
+  if(!list) return;
+  const types=getSupplementTypes();
+  list.innerHTML=types.map((t,idx)=>{
+    const parts=t.split(' ');
+    const icon=parts[0], label=parts.slice(1).join(' ');
+    return `<div class="akt-row supp-drag-row" data-supp-type="${t.replace(/"/g,'&quot;')}" onpointerdown="suppRowPointerDown(event)">
+      <span class="supp-drag-handle">☰</span>
+      <div class="akt-row-icon">${icon}</div>
+      <div class="akt-row-info"><span class="akt-row-name">${label}</span></div>
+      <button type="button" class="akt-row-del" onclick="event.stopPropagation();removeSupplementType(${JSON.stringify(t).replace(/"/g,'&quot;')})">−</button>
+    </div>`;
+  }).join('');
+}
+// ── Klicken + Halten + Ziehen zum Umsortieren der Supplement-Liste ──
+let suppDragEl=null, suppDragHoldTimer=null, suppDragStartY=0, suppDragActive=false;
+function suppRowPointerDown(e){
+  if(e.target.closest('.akt-row-del')) return;
+  const row=e.currentTarget;
+  suppDragStartY=e.clientY;
+  suppDragActive=false;
+  clearTimeout(suppDragHoldTimer);
+  suppDragHoldTimer=setTimeout(()=>{
+    suppDragActive=true;
+    suppDragEl=row;
+    row.classList.add('dragging');
+    row.style.touchAction='none';
+    try{ row.setPointerCapture(e.pointerId); }catch(err){}
+  },320);
+}
+function suppRowPointerMove(e){
+  if(!suppDragActive||!suppDragEl){
+    if(suppDragHoldTimer&&Math.abs(e.clientY-suppDragStartY)>10) clearTimeout(suppDragHoldTimer);
+    return;
+  }
+  e.preventDefault();
+  const dy=e.clientY-suppDragStartY;
+  suppDragEl.style.transform=`translateY(${dy}px)`;
+  const list=suppDragEl.parentElement;
+  if(!list) return;
+  const rows=[...list.children];
+  const dragIdx=rows.indexOf(suppDragEl);
+  const dragRect=suppDragEl.getBoundingClientRect();
+  const dragMid=dragRect.top+dragRect.height/2;
+  for(const sib of rows){
+    if(sib===suppDragEl) continue;
+    const r=sib.getBoundingClientRect();
+    const sibMid=r.top+r.height/2;
+    const sibIdx=rows.indexOf(sib);
+    if(dragIdx<sibIdx&&dragMid>sibMid){
+      list.insertBefore(suppDragEl,sib.nextSibling);
+      suppDragEl.style.transform='translateY(0px)';
+      suppDragStartY=e.clientY;
+      break;
+    } else if(dragIdx>sibIdx&&dragMid<sibMid){
+      list.insertBefore(suppDragEl,sib);
+      suppDragEl.style.transform='translateY(0px)';
+      suppDragStartY=e.clientY;
+      break;
+    }
+  }
+}
+function suppRowPointerUp(){
+  clearTimeout(suppDragHoldTimer);
+  if(suppDragActive&&suppDragEl){
+    suppDragEl.classList.remove('dragging');
+    suppDragEl.style.transform='';
+    suppDragEl.style.touchAction='';
+    const list=document.getElementById('suppManageList');
+    if(list){
+      const newOrder=[...list.children].map(row=>row.dataset.suppType);
+      db.supplementTypes=newOrder;
+      save();
+      renderSupplementTiles();
+    }
+  }
+  suppDragActive=false;
+  suppDragEl=null;
+}
+document.addEventListener('pointermove',suppRowPointerMove);
+document.addEventListener('pointerup',suppRowPointerUp);
+document.addEventListener('pointercancel',suppRowPointerUp);
+function addSupplementType(){
+  const input=document.getElementById('suppNewName');
+  const val=input.value.trim();
+  if(!val) return;
+  const withIcon=/^\p{Emoji}/u.test(val)?val:`💊 ${val}`;
+  const types=getSupplementTypes();
+  if(types.some(t=>t.toLowerCase()===withIcon.toLowerCase())){ toast('❗ Gibt es schon'); return; }
+  types.push(withIcon);
+  db.supplementTypes=types;
+  save();
+  input.value='';
+  renderSupplementTiles();
+  renderSuppManageList();
+  renderSupplementsList();
+  toast('✅ Hinzugefügt');
+}
+function removeSupplementType(typeStr){
+  const types=getSupplementTypes();
+  const idx=types.indexOf(typeStr);
+  if(idx===-1) return;
+  types.splice(idx,1);
+  db.supplementTypes=types;
+  save();
+  renderSupplementTiles();
+  renderSuppManageList();
+  renderSupplementsList();
+}
 let suppPendingSelection=[];
 let suppSharedTime=null;
 let suppEditingIdx=null;
@@ -2282,6 +2534,7 @@ function renderSupplementsList(){
 }
 function renderSupplements(){
   suppPendingSelection=[]; suppSharedTime=null; suppEditingIdx=null; suppEditTimeVal=null;
+  renderSupplementTiles();
   renderSuppEditor();
   renderSupplementsList();
   updateSuppTilePicking();
@@ -2910,7 +3163,11 @@ function loadProfile(){
   if(p.name) document.getElementById('profileName').value=p.name;
   if(p.ziel) document.getElementById('profileZiel').value=p.ziel;
   if(p.zeitraum) document.getElementById('profileZeitraum').value=p.zeitraum;
+  if(p.currentWeight) document.getElementById('profileCurrentWeight').value=p.currentWeight;
+  if(p.targetWeight) document.getElementById('profileTargetWeight').value=p.targetWeight;
+  updateCarbTargetDisplay();
   loadDrinkGoals();
+  renderNutrientStats();
 }
 function getDrinkGoals(){
   return db.drinkGoals||{wasser:2.5,tee:2};
@@ -3005,13 +3262,36 @@ function renderFoodMemoryList(){
   dl.innerHTML=(db.foodMemory||[]).map(n=>`<option value="${n.replace(/"/g,'&quot;')}"></option>`).join('');
 }
 // Vorschlags-Chips unter dem Freitextfeld "Speisen & Menge", basierend auf früher eingegebenen Lebensmitteln
-function onFoodInputChange(el){
+function bucketFromHour(h){
+  if(h>=5&&h<10) return 'Frühstück';
+  if(h>=10&&h<14) return 'Mittagessen';
+  if(h>=14&&h<18) return 'Snack';
+  if(h>=18&&h<22) return 'Abendessen';
+  return 'Snack';
+}
+function getFoodFrequencyScores(){
+  const scores={};
+  const nowBucket=bucketFromHour(swissNowParts().hour);
+  (db.entries||[]).forEach(e=>{
+    const h=timeToHour(e.time);
+    const names=[];
+    if(e.aiAnalysis&&e.aiAnalysis.lebensmittel) e.aiAnalysis.lebensmittel.forEach(it=>it.name&&names.push(it.name));
+    else if(e.food) e.food.split(',').forEach(f=>f.trim()&&names.push(f.trim()));
+    const sameTime=h!=null&&bucketFromHour(h)===nowBucket;
+    names.forEach(n=>{ scores[n]=(scores[n]||0)+(sameTime?3:0.4); });
+  });
+  return scores;
+}
+function onFoodInputChange(el){ showFoodSuggestions(el.value); }
+function showFoodSuggestions(rawValue){
   const box=document.getElementById('foodSuggestions');
   if(!box) return;
-  const lastPart=el.value.split(',').pop().trim().toLowerCase();
-  if(!lastPart){ box.innerHTML=''; return; }
-  const memory=db.foodMemory||[];
-  const matches=memory.filter(n=>n.toLowerCase().includes(lastPart)&&n.toLowerCase()!==lastPart).slice(0,6);
+  const lastPart=(rawValue||'').split(',').pop().trim().toLowerCase();
+  const scores=getFoodFrequencyScores();
+  let names=Object.keys(scores);
+  if(lastPart) names=names.filter(n=>n.toLowerCase().includes(lastPart)&&n.toLowerCase()!==lastPart);
+  names.sort((a,b)=>scores[b]-scores[a]);
+  const matches=names.slice(0,6);
   if(!matches.length){ box.innerHTML=''; return; }
   box.innerHTML=matches.map(n=>`<button type="button" class="food-suggestion-chip" onclick="applyFoodSuggestion(${JSON.stringify(n)})">${n}</button>`).join('');
 }
@@ -3115,6 +3395,225 @@ function renderRecipeSuggestions(list){
       ${r.zubereitung?`<div style="font-size:12px;margin-top:5px"><b>Zubereitung:</b> ${r.zubereitung}</div>`:''}
       <div style="font-size:11.5px;color:var(--gray-dark);margin-top:7px">≈ ${r.kalorien||'?'} kcal · ${r.protein_g||0}g P · ${r.kh_g||0}g KH · ${r.fett_g||0}g F</div>
     </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+//  STATISTIKEN — KI-Schätzung gegen Ernährungsziele (Protein, Ballaststoffe,
+//  Pflanzenvielfalt, Wasser, Omega-3), mit Fokus-Hinweis am Folgetag bei Defizit
+// ══════════════════════════════════════════════════════════════════════════
+function getLatestWeight(){
+  const dates=Object.keys(db.dayData||{}).sort().reverse();
+  for(const key of dates){
+    const w=db.dayData[key].gewicht;
+    if(w) return parseFloat(w);
+  }
+  return null;
+}
+function calculateCarbTarget(){
+  const p=db.profile||{};
+  const current=parseFloat(p.currentWeight);
+  if(!current||isNaN(current)) return null;
+  const target=parseFloat(p.targetWeight);
+  let perKg,phase;
+  if(target&&!isNaN(target)&&target<current-0.5){ perKg=3.5; phase='Gewichtsreduktion'; }
+  else if(target&&!isNaN(target)&&target>current+0.5){ perKg=7; phase='Gewichtsaufbau'; }
+  else { perKg=6; phase='Erhalt / Ausdauertraining'; }
+  return {current,target:isNaN(target)?null:target,perKg,grams:Math.round(current*perKg),phase};
+}
+function saveWeightGoals(){
+  db.profile=db.profile||{};
+  db.profile.currentWeight=document.getElementById('profileCurrentWeight').value;
+  db.profile.targetWeight=document.getElementById('profileTargetWeight').value;
+  save();
+  updateCarbTargetDisplay();
+}
+function updateCarbTargetDisplay(){
+  const info=calculateCarbTarget();
+  const cell=document.getElementById('carbTargetCell');
+  if(cell) cell.textContent=info?`≈ ${info.grams} g (${info.perKg} g/kg) — ${info.phase}`:'Gewicht im Profil hinterlegen';
+  const explain=document.getElementById('carbTargetExplain');
+  if(explain&&info) explain.textContent=`Aktuelles Ziel: ≈ ${info.grams} g Kohlenhydrate/Tag (${info.perKg} g pro kg Körpergewicht, Modus: ${info.phase}).`;
+}
+function lastNDateKeys(n){
+  const out=[];
+  let d=swissTodayAsLocalDate();
+  for(let i=0;i<n;i++){ out.push(dateKeyFromDate(d)); d.setDate(d.getDate()-1); }
+  return out;
+}
+async function analyzeNutrientTargets(){
+  if(!getAiKey()){ toast('❗ Bitte zuerst API-Key im Profil hinterlegen'); return; }
+  const body=document.getElementById('nutrientStatsBody');
+  body.innerHTML='🤖 Schätze Werte anhand deiner heutigen Einträge…';
+  const dateKey=todayKey();
+  const weight=getLatestWeight();
+  const d=db.dayData&&db.dayData[dateKey]||{};
+  const entries=(db.entries||[]).filter(e=>e.date===dateKey);
+  const waterGlasses=(db.water||{})[dateKey]||0;
+  const waterLiters=(waterGlasses*0.25).toFixed(2);
+  const trainingMin=d.trainingsMinuten||((d.aktivitaet&&d.aktivitaet.items)||[]).reduce((s,it)=>s+(parseInt(it.min)||0),0);
+  const weekDates=lastNDateKeys(7);
+  const weekFoods=new Set();
+  (db.entries||[]).filter(e=>weekDates.includes(e.date)).forEach(e=>{
+    if(e.aiAnalysis&&e.aiAnalysis.lebensmittel) e.aiAnalysis.lebensmittel.forEach(it=>it.name&&weekFoods.add(it.name));
+    else if(e.food) e.food.split(',').forEach(f=>f.trim()&&weekFoods.add(f.trim()));
+  });
+  const mealsContext=entries.map(e=>({
+    zeit:e.time,
+    speise:e.food||(e.aiAnalysis&&e.aiAnalysis.beschreibung)||'',
+    lebensmittel:(e.aiAnalysis&&e.aiAnalysis.lebensmittel)||e.manualItems||null,
+  }));
+  if(!mealsContext.length&&!weekFoods.size){
+    body.innerHTML='Noch keine Mahlzeiten heute erfasst — trag zuerst etwas ein, dann kann ich schätzen.';
+    return;
+  }
+  try{
+    const carbInfo=calculateCarbTarget();
+    const carbLine=carbInfo?`- Carbs (Kohlenhydrate): ≈ ${carbInfo.grams} g, täglich (individuell berechnet: ${carbInfo.perKg} g/kg, Modus "${carbInfo.phase}")`:null;
+    const parsed=await callTextAnalysisAPI(
+`Du bist Ernährungsberater für einen Langstrecken-Piloten mit Zöliakie (glutenfrei) und Low-FODMAP-Diät, der für einen Bergmarathon trainiert. Schätze anhand der folgenden Angaben realistisch, wie gut er heute (${dateKey}) seine Ernährungsziele erreicht. Gib IMMER eine plausible Schätzung ab, auch ohne exakte Grammangaben — schätze anhand der beschriebenen Lebensmittel und üblichen Portionsgrößen.
+
+Körpergewicht: ${weight?weight+' kg':'unbekannt, nimm 80 kg an'}
+Trainingsdauer heute: ${trainingMin} Min.
+Wasseraufnahme heute (bereits erfasst): ${waterLiters} L
+Heutige Mahlzeiten: ${JSON.stringify(mealsContext)}
+Verschiedene Lebensmittel der letzten 7 Tage (zähle für Pflanzenvielfalt nur die pflanzlichen davon): ${[...weekFoods].join(', ')||'keine Daten'}
+
+Ziele:
+- Protein: 1,6–2,4 g/kg Körpergewicht, täglich
+- Ballaststoffe: mind. 30 g, täglich
+- Pflanzenvielfalt: 30+ verschiedene pflanzliche Lebensmittel, wöchentlich (rollierend über die letzten 7 Tage)
+- Wasser: 35–40 ml/kg Körpergewicht + geschätzter Trainingsverlust (ca. 500–750 ml pro Trainingsstunde), täglich
+- Omega-3: 1–2 g EPA/DHA, täglich${carbLine?'\n'+carbLine:''}
+
+Antworte AUSSCHLIESSLICH mit JSON:
+{"ziele":[{"name":"Protein","geschaetzter_wert":"...","zielwert":"...","erreichung_prozent":Zahl von 0-150,"status":"erreicht|knapp|defizit","fokus_tipp":"kurzer, konkreter Tipp falls knapp/defizit, sonst leerer String"}]}`,1700
+    );
+    db.nutrientTargets=db.nutrientTargets||{};
+    db.nutrientTargets[dateKey]={ziele:parsed.ziele||[],ts:Date.now()};
+    save();
+    renderNutrientStats();
+    toast('✅ Statistiken aktualisiert');
+  }catch(err){
+    const msg=err&&err.message==='NO_KEY'?'Kein API-Key im Profil hinterlegt':(err.message||'Unbekannter Fehler');
+    body.innerHTML='❌ '+msg.replace(/</g,'&lt;');
+  }
+}
+function renderNutrientStats(){
+  const body=document.getElementById('nutrientStatsBody');
+  if(body){
+    const data=(db.nutrientTargets||{})[todayKey()];
+    if(!data||!data.ziele||!data.ziele.length){
+      body.innerHTML='';
+    } else {
+      const statusColor={erreicht:'#28a745',knapp:'#fb8c00',defizit:'#dc3545'};
+      const statusIcon={erreicht:'✅',knapp:'⚠️',defizit:'❌'};
+      body.innerHTML=data.ziele.map(z=>{
+        const pct=Math.max(0,Math.min(100,z.erreichung_prozent!=null?z.erreichung_prozent:(z.status==='erreicht'?100:z.status==='knapp'?60:25)));
+        const color=statusColor[z.status]||'#8a8f98';
+        return `
+    <div class="nutrient-row">
+      <div class="nutrient-row-top">
+        <span class="nutrient-name">${statusIcon[z.status]||''} ${z.name}</span>
+        <span class="nutrient-value" style="color:${color}">${z.geschaetzter_wert||'–'} / ${z.zielwert||'–'}</span>
+      </div>
+      <div class="nutrient-gauge"><div class="nutrient-gauge-fill" style="width:${pct}%;background:${color}"></div></div>
+      ${z.fokus_tipp?`<div class="nutrient-tip">💡 ${z.fokus_tipp}</div>`:''}
+    </div>`;
+      }).join('');
+    }
+  }
+  renderNutrientStreak();
+  renderNutrientBadges();
+}
+function calculateNutrientStreak(){
+  const data=db.nutrientTargets||{};
+  let streak=0;
+  let d=swissTodayAsLocalDate();
+  // Heute zählt nur mit, wenn schon ausgewertet; sonst bei gestern starten
+  if(!data[dateKeyFromDate(d)]) d.setDate(d.getDate()-1);
+  while(true){
+    const rec=data[dateKeyFromDate(d)];
+    if(!rec||!rec.ziele||!rec.ziele.length) break;
+    const hasDefizit=rec.ziele.some(z=>z.status==='defizit');
+    if(hasDefizit) break;
+    streak++;
+    d.setDate(d.getDate()-1);
+  }
+  return streak;
+}
+function calculateNutrientBestStreak(){
+  const dates=Object.keys(db.nutrientTargets||{}).sort();
+  let best=0,run=0,prev=null;
+  dates.forEach(dstr=>{
+    const rec=db.nutrientTargets[dstr];
+    const ok=rec&&rec.ziele&&rec.ziele.length&&!rec.ziele.some(z=>z.status==='defizit');
+    if(ok){
+      if(prev){
+        const diff=Math.round((new Date(dstr+'T00:00:00')-new Date(prev+'T00:00:00'))/86400000);
+        run=diff===1?run+1:1;
+      } else run=1;
+      if(run>best) best=run;
+      prev=dstr;
+    } else { run=0; prev=null; }
+  });
+  return Math.max(best,calculateNutrientStreak());
+}
+function renderNutrientStreak(){
+  const row=document.getElementById('nutrientStreakRow');
+  const textEl=document.getElementById('nutrientStreakText');
+  if(!row||!textEl) return;
+  const streak=calculateNutrientStreak();
+  if(streak>0){
+    row.style.display='flex';
+    textEl.textContent=`${streak} Tag${streak===1?'':'e'} in Folge alle Ziele erreicht`;
+  } else {
+    row.style.display='none';
+  }
+}
+function calculateNutrientBadges(){
+  const data=db.nutrientTargets||{};
+  const days=Object.keys(data);
+  const bestStreak=calculateNutrientBestStreak();
+  const anyPerfectDay=days.some(dstr=>{
+    const rec=data[dstr];
+    return rec&&rec.ziele&&rec.ziele.length&&rec.ziele.every(z=>z.status==='erreicht');
+  });
+  const proteinHits=days.filter(dstr=>{
+    const rec=data[dstr];
+    return rec&&rec.ziele&&rec.ziele.some(z=>z.name==='Protein'&&z.status==='erreicht');
+  }).length;
+  const plantHits=days.filter(dstr=>{
+    const rec=data[dstr];
+    return rec&&rec.ziele&&rec.ziele.some(z=>z.name==='Pflanzenvielfalt'&&z.status==='erreicht');
+  }).length;
+  return [
+    {icon:'🎯',label:'Erster Vollerfolg',done:anyPerfectDay},
+    {icon:'🔥',label:'7-Tage-Ziel-Streak',done:bestStreak>=7},
+    {icon:'👑',label:'30-Tage-Ziel-Streak',done:bestStreak>=30},
+    {icon:'💪',label:'10x Protein-Ziel',done:proteinHits>=10},
+    {icon:'🌱',label:'5x Pflanzenvielfalt',done:plantHits>=5},
+  ];
+}
+function renderNutrientBadges(){
+  const grid=document.getElementById('nutrientBadgesGrid');
+  if(!grid) return;
+  grid.innerHTML=calculateNutrientBadges().map(b=>`
+    <div class="gutty-badge${b.done?' unlocked':''}" title="${b.label}">
+      <div class="gutty-badge-icon">${b.icon}</div>
+      <div class="gutty-badge-label">${b.label}</div>
+    </div>`).join('');
+}
+function checkYesterdayFocus(){
+  const banner=document.getElementById('nutrientFocusBanner');
+  if(!banner) return;
+  const yKey=addDaysToDateKey(todayKey(),-1);
+  const data=(db.nutrientTargets||{})[yKey];
+  if(!data||!data.ziele){ banner.style.display='none'; return; }
+  const deficits=data.ziele.filter(z=>z.status==='defizit'||z.status==='knapp');
+  if(!deficits.length){ banner.style.display='none'; return; }
+  banner.style.display='flex';
+  const textEl=document.getElementById('nutrientFocusText');
+  if(textEl) textEl.textContent=deficits.map(z=>`${z.name}${z.fokus_tipp?': '+z.fokus_tipp:''}`).join(' · ');
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -3373,7 +3872,7 @@ function editEntry(id){
     }
   }
 
-  document.getElementById('inputTime').value=e.time||nowTime();
+  setMealWheelTime(e.time||nowTime());
   document.getElementById('inputFood').value=e.food||'';
   document.getElementById('inputDrink').value=e.drink||'';
   document.getElementById('inputNote').value=e.note||'';
@@ -3452,12 +3951,51 @@ const stressColors=['','#28a745','#5cb85c','#ffc107','#ff9800','#dc3545'];
 const TYPE_EMOJIS={'Frühstück':'🌅','Mittagessen':'☀️','Abendessen':'🌙','Snack':'🍎','Getränk':'☕','Sonstiges':'📌'};
 let currentEditId=null;
 
+const MEAL_SCHEDULE=[
+  {type:'Frühstück',time:'07:30',label:'Frühstück'},
+  {type:'Snack',time:'10:00',label:'Snack'},
+  {type:'Mittagessen',time:'12:00',label:'Mittagessen'},
+  {type:'Snack',time:'16:00',label:'Preworkout-Snack'},
+  {type:'Abendessen',time:'19:30',label:'Abendessen'},
+];
+function getNextMealSlot(){
+  const entries=(db.entries||[]).filter(e=>e.date===viewKey());
+  for(let i=0;i<MEAL_SCHEDULE.length;i++){
+    const slot=MEAL_SCHEDULE[i];
+    const slotH=timeToHour(slot.time);
+    const nextH=i+1<MEAL_SCHEDULE.length?timeToHour(MEAL_SCHEDULE[i+1].time):24;
+    const fulfilled=entries.some(e=>{
+      const eh=timeToHour(e.time);
+      return e.type===slot.type&&eh!=null&&eh>=slotH&&eh<nextH;
+    });
+    if(!fulfilled) return slot;
+  }
+  return null;
+}
+function renderNextMealBadge(){
+  const badge=document.getElementById('nextMealBadge');
+  if(!badge) return;
+  if(viewKey()!==todayKey()){ badge.textContent=''; badge.className='next-meal-badge'; return; }
+  const slot=getNextMealSlot();
+  if(!slot){
+    badge.textContent='✅ Alle erfasst';
+    badge.className='next-meal-badge done';
+    return;
+  }
+  const nowP=swissNowParts();
+  const nowH=nowP.hour+nowP.minute/60;
+  const slotH=timeToHour(slot.time);
+  const overdue=nowH>slotH;
+  badge.textContent=`${slot.label} ${slot.time}`;
+  badge.className='next-meal-badge '+(overdue?'overdue':'upcoming');
+}
 function renderToday(){
   const key=viewKey();
   const entries=(db.entries||[]).filter(e=>e.date===key).sort((a,b)=>a.time.localeCompare(b.time));
   const c=document.getElementById('todayEntries');
   const seEl=document.getElementById('statEintraege'); if(seEl) seEl.textContent=entries.length;
   currentEditId=null;
+  renderNextMealBadge();
   if(!entries.length){
     c.innerHTML=`<div class="empty"><div class="emoji">🍽</div><p><strong>+ Eintrag hinzufügen</strong></p></div>`;
     renderDailyAnalysis();
