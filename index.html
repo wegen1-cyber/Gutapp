@@ -180,14 +180,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .stool-add-btn:active{transform:scale(.98)}
 
 .schlaf-row{display:flex;gap:8px;align-items:center;margin-bottom:9px}
-.sleep-picker-wrap{position:relative;margin-bottom:12px;background:var(--gray);border-radius:12px;padding:0 8px}
-.sleep-picker{height:120px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;position:relative;scrollbar-width:none}
-.sleep-picker::-webkit-scrollbar{display:none}
-.sleep-picker-item{height:40px;display:flex;align-items:center;justify-content:center;font-size:16px;color:var(--gray-dark);scroll-snap-align:center;font-weight:600;opacity:.45;transition:opacity .1s,font-size .1s}
-.sleep-picker-item.center{color:var(--green);font-size:21px;opacity:1}
-.sleep-picker-pad{height:40px}
-.sleep-picker-highlight{position:absolute;top:40px;left:8px;right:8px;height:40px;border-top:1.5px solid #d5d5d5;border-bottom:1.5px solid #d5d5d5;pointer-events:none}
-.time-picker-btn{width:100%;background:var(--gray);border:2px solid transparent;border-radius:9px;padding:9px 11px;font-size:15px;font-weight:700;font-family:inherit;color:var(--text);text-align:center;cursor:pointer}
 .sleep-editor-card{background:linear-gradient(160deg,#1a2140 0%,#2d2f5e 55%,#3d3570 100%);border-radius:20px;padding:16px 14px;margin-top:10px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(26,33,64,.3)}
 .sleep-editor-card::before{content:'';position:absolute;top:-30px;right:-24px;width:110px;height:110px;background:radial-gradient(circle,rgba(255,255,255,.09),transparent 70%);border-radius:50%;pointer-events:none}
 .sleep-editor-cols{display:flex;align-items:flex-start;gap:4px;position:relative;z-index:1}
@@ -195,34 +187,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .sleep-editor-col-label{font-size:11px;font-weight:700;margin-bottom:8px;opacity:.92;white-space:nowrap}
 .sleep-editor-arrow{padding-top:50px;font-size:15px;opacity:.45;flex-shrink:0}
 .sleep-date-input{width:100%;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:7px 4px;font-size:10.5px;font-weight:600;color:#fff;text-align:center;font-family:inherit;margin-bottom:9px;-webkit-appearance:none;color-scheme:dark}
+.sleep-time-input{width:100%;background:rgba(255,255,255,.13);border:1px solid rgba(255,255,255,.2);border-radius:10px;padding:9px 6px;font-size:16px;font-weight:700;color:#fff;text-align:center;font-family:inherit;-webkit-appearance:none;color-scheme:dark}
 .sleep-duration-badge{display:block;text-align:center;margin-top:16px;font-family:var(--font-serif);font-size:23px;font-weight:800;position:relative;z-index:1;letter-spacing:-.3px}
 .sleep-duration-badge small{display:block;font-size:9.5px;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
-.sleep-editor-card .mini-wheel-wrap{background:rgba(255,255,255,.1);-webkit-backdrop-filter:blur(8px);backdrop-filter:blur(8px);border:1px solid rgba(255,255,255,.12);padding:0 3px}
-.sleep-editor-card .mini-wheel{width:32px}
-.sleep-editor-card .mini-wheel-item{color:rgba(255,255,255,.38);font-size:12.5px}
-.sleep-editor-card .mini-wheel-item.center{color:#fff;font-size:15.5px}
-.sleep-editor-card .mini-wheel-colon{color:rgba(255,255,255,.65);font-size:13px}
-.sleep-editor-card .mini-wheel-highlight{border-color:rgba(255,255,255,.28);border-radius:6px}
-.mini-wheel-wrap{position:relative;display:flex;align-items:center;justify-content:center;gap:1px;background:#fff;border-radius:12px;padding:0 6px;flex-shrink:0}
-.mini-wheel{height:102px;width:38px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:relative}
-.mini-wheel::-webkit-scrollbar{display:none}
-.mini-wheel-item{height:34px;display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:600;color:var(--gray-dark);scroll-snap-align:center;opacity:.35;transition:opacity .1s,font-size .1s}
-.mini-wheel-item.center{color:var(--green);font-size:17px;opacity:1;font-weight:800}
-.mini-wheel-pad{height:34px}
-.mini-wheel-colon{font-size:15px;font-weight:800;color:var(--text)}
-.mini-wheel-highlight{position:absolute;top:34px;left:4px;right:4px;height:34px;border-top:1.5px solid #e2e4e8;border-bottom:1.5px solid #e2e4e8;pointer-events:none}
-.time-picker-btn:active{border-color:var(--green);background:#fff}
-.time-wheel-popover{display:none;position:absolute;top:100%;left:0;right:0;margin-top:6px;background:#fff;border-radius:16px;box-shadow:0 10px 26px rgba(0,0,0,.18);padding:10px;z-index:60}
-.time-wheel-popover.open{display:block}
-.time-wheel-wrap{position:relative;display:flex;align-items:center;justify-content:center;gap:2px;background:var(--gray);border-radius:14px;padding:0 6px;margin-bottom:10px}
-.time-wheel{height:150px;width:48px;overflow-y:scroll;scroll-snap-type:y mandatory;-webkit-overflow-scrolling:touch;scrollbar-width:none;position:relative}
-.time-wheel::-webkit-scrollbar{display:none}
-.time-wheel-item{height:38px;display:flex;align-items:center;justify-content:center;font-size:18px;font-weight:600;color:var(--gray-dark);scroll-snap-align:center;opacity:.4;transition:opacity .1s,font-size .1s}
-.time-wheel-item.center{color:var(--green);font-size:22px;opacity:1;font-weight:800}
-.time-wheel-pad{height:56px}
-.time-wheel-colon{font-size:20px;font-weight:800;color:var(--text);margin-bottom:1px}
-.time-wheel-highlight{position:absolute;top:56px;left:6px;right:6px;height:38px;border-top:1.5px solid #d5d5d5;border-bottom:1.5px solid #d5d5d5;pointer-events:none}
-.sleep-picker-unit{position:absolute;top:40px;right:20px;height:40px;display:flex;align-items:center;font-size:13px;font-weight:600;color:var(--gray-dark);pointer-events:none}
 .schlaf-hours{width:68px;background:var(--gray);border:2px solid transparent;border-radius:10px;padding:8px 10px;font-size:15px;font-family:inherit;color:var(--text);outline:none;text-align:center;-webkit-appearance:none}
 .schlaf-hours:focus{border-color:var(--green);background:#fff}
 .schlaf-hours-btn{background:none;border:none;padding:3px 2px;font-size:13px;font-family:inherit;font-weight:600;color:var(--gray-dark);text-align:center;cursor:pointer;display:inline-flex;align-items:baseline;gap:3px;text-decoration:underline;text-decoration-color:#ccc;text-underline-offset:2px}
@@ -1181,13 +1148,7 @@ textarea.form-input{min-height:68px;resize:none}
     <div class="modal-body">
       <div class="form-group">
         <label class="form-label">⏰ Uhrzeit</label>
-        <input type="hidden" id="inputTime">
-        <div class="mini-wheel-wrap" style="margin:0 auto;width:-webkit-fit-content;width:fit-content">
-          <div class="mini-wheel" id="mealWheelH" onscroll="onMealWheelScroll('hour')" onclick="onMealWheelClick(event,'mealWheelH')"></div>
-          <div class="mini-wheel-colon">:</div>
-          <div class="mini-wheel" id="mealWheelM" onscroll="onMealWheelScroll('minute')" onclick="onMealWheelClick(event,'mealWheelM')"></div>
-          <div class="mini-wheel-highlight"></div>
-        </div>
+        <input type="time" class="form-input" id="inputTime">
       </div>
       <div class="form-group">
         <label class="form-label">Mahlzeit / Typ</label>
@@ -1640,7 +1601,7 @@ window.onload=function(){
 };
 function setTimeNow(){
   const t=nowTime();
-  setMealWheelTime(t);
+  document.getElementById('inputTime').value=t;
   document.getElementById('stoolTime').value=t;
 }
 
@@ -1863,104 +1824,6 @@ function removeSleepSession(idx){
   renderTimeline();
 }
 
-// ── Kompaktes iOS-Style Scrollrad für Uhrzeiten, direkt im Editor eingebettet ──
-const MW_ITEM_H=34;
-function buildMiniWheel(id,max){
-  const el=document.getElementById(id);
-  if(!el||el.dataset.built) return;
-  let html='<div class="mini-wheel-pad"></div>';
-  for(let v=0;v<max;v++){ html+=`<div class="mini-wheel-item" data-v="${v}">${String(v).padStart(2,'0')}</div>`; }
-  html+='<div class="mini-wheel-pad"></div>';
-  el.innerHTML=html;
-  el.dataset.built='1';
-}
-function highlightMiniWheel(id,idx){
-  const el=document.getElementById(id);
-  if(!el) return;
-  el.querySelectorAll('.mini-wheel-item').forEach((it,i)=>it.classList.toggle('center',i===idx));
-}
-function setMiniWheelValue(id,val,animate){
-  const el=document.getElementById(id);
-  if(!el) return;
-  el.scrollTo({top:val*MW_ITEM_H,behavior:animate?'smooth':'auto'});
-  highlightMiniWheel(id,val);
-}
-let sleepWheelScrollTimer=null;
-function onSleepWheelScroll(which,unit){
-  const id=`sleepWheel${which==='start'?'Start':'End'}${unit==='hour'?'H':'M'}`;
-  const el=document.getElementById(id);
-  if(!el) return;
-  const idx=Math.round(el.scrollTop/MW_ITEM_H);
-  highlightMiniWheel(id,idx);
-  clearTimeout(sleepWheelScrollTimer);
-  sleepWheelScrollTimer=setTimeout(()=>commitSleepWheelValue(which),120);
-}
-function onSleepWheelClick(e,id){
-  const item=e.target.closest('.mini-wheel-item');
-  if(!item) return;
-  const idx=parseInt(item.dataset.v);
-  setMiniWheelValue(id,idx,true);
-  const which=id.includes('Start')?'start':'end';
-  clearTimeout(sleepWheelScrollTimer);
-  sleepWheelScrollTimer=setTimeout(()=>commitSleepWheelValue(which),150);
-}
-// ── ZEIT-RAD FÜR MAHLZEITEN — exakt dieselbe Komponente wie bei Schlafphasen ──
-let mealWheelScrollTimer=null;
-function setMealWheelTime(val){
-  const useVal=val||nowTime();
-  buildMiniWheel('mealWheelH',24);
-  buildMiniWheel('mealWheelM',60);
-  const [hh,mm]=useVal.split(':').map(Number);
-  setTimeout(()=>{
-    setMiniWheelValue('mealWheelH',hh||0,false);
-    setMiniWheelValue('mealWheelM',mm||0,false);
-  },0);
-  const hidden=document.getElementById('inputTime');
-  if(hidden) hidden.value=useVal;
-}
-function onMealWheelScroll(unit){
-  const id=unit==='hour'?'mealWheelH':'mealWheelM';
-  const el=document.getElementById(id);
-  if(!el) return;
-  const idx=Math.round(el.scrollTop/MW_ITEM_H);
-  highlightMiniWheel(id,idx);
-  clearTimeout(mealWheelScrollTimer);
-  mealWheelScrollTimer=setTimeout(commitMealWheelValue,120);
-}
-function onMealWheelClick(e,id){
-  const item=e.target.closest('.mini-wheel-item');
-  if(!item) return;
-  const idx=parseInt(item.dataset.v);
-  setMiniWheelValue(id,idx,true);
-  clearTimeout(mealWheelScrollTimer);
-  mealWheelScrollTimer=setTimeout(commitMealWheelValue,150);
-}
-function commitMealWheelValue(){
-  const hEl=document.getElementById('mealWheelH'), mEl=document.getElementById('mealWheelM');
-  if(!hEl||!mEl) return;
-  const hh=Math.max(0,Math.round(hEl.scrollTop/MW_ITEM_H));
-  const mm=Math.max(0,Math.round(mEl.scrollTop/MW_ITEM_H));
-  const val=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-  const hidden=document.getElementById('inputTime');
-  if(hidden) hidden.value=val;
-}
-function commitSleepWheelValue(which){
-  if(!sleepEditorState) return;
-  const hId=`sleepWheel${which==='start'?'Start':'End'}H`;
-  const mId=`sleepWheel${which==='start'?'Start':'End'}M`;
-  const hEl=document.getElementById(hId), mEl=document.getElementById(mId);
-  if(!hEl||!mEl) return;
-  const hh=Math.max(0,Math.round(hEl.scrollTop/MW_ITEM_H));
-  const mm=Math.max(0,Math.round(mEl.scrollTop/MW_ITEM_H));
-  const val=`${String(hh).padStart(2,'0')}:${String(mm).padStart(2,'0')}`;
-  if(which==='start'){
-    sleepEditorState.start=val;
-    if(sleepEditorState.endDate<sleepEditorState.date) sleepEditorState.endDate=sleepEditorState.date;
-  } else {
-    sleepEditorState.end=val;
-  }
-  updateSleepDurationPreview();
-}
 function renderSleepEditor(){
   const box=document.getElementById('sleepEditor');
   if(!box) return;
@@ -1977,23 +1840,13 @@ function renderSleepEditor(){
         <div class="sleep-editor-col">
           <div class="sleep-editor-col-label">🌙 Einschlafen</div>
           <input type="date" class="sleep-date-input" value="${sleepEditorState.date||viewKey()}" oninput="setSleepEditorDate(this.value)">
-          <div class="mini-wheel-wrap">
-            <div class="mini-wheel" id="sleepWheelStartH" onscroll="onSleepWheelScroll('start','hour')" onclick="onSleepWheelClick(event,'sleepWheelStartH')"></div>
-            <div class="mini-wheel-colon">:</div>
-            <div class="mini-wheel" id="sleepWheelStartM" onscroll="onSleepWheelScroll('start','minute')" onclick="onSleepWheelClick(event,'sleepWheelStartM')"></div>
-            <div class="mini-wheel-highlight"></div>
-          </div>
+          <input type="time" class="form-input sleep-time-input" value="${sleepEditorState.start||''}" oninput="setSleepEditorStart(this.value)">
         </div>
         <div class="sleep-editor-arrow">→</div>
         <div class="sleep-editor-col">
           <div class="sleep-editor-col-label">☀️ Aufwachen</div>
           <input type="date" class="sleep-date-input" value="${sleepEditorState.endDate||sleepEditorState.date||viewKey()}" oninput="setSleepEditorEndDate(this.value)">
-          <div class="mini-wheel-wrap">
-            <div class="mini-wheel" id="sleepWheelEndH" onscroll="onSleepWheelScroll('end','hour')" onclick="onSleepWheelClick(event,'sleepWheelEndH')"></div>
-            <div class="mini-wheel-colon">:</div>
-            <div class="mini-wheel" id="sleepWheelEndM" onscroll="onSleepWheelScroll('end','minute')" onclick="onSleepWheelClick(event,'sleepWheelEndM')"></div>
-            <div class="mini-wheel-highlight"></div>
-          </div>
+          <input type="time" class="form-input sleep-time-input" value="${sleepEditorState.end||''}" oninput="setSleepEditorEnd(this.value)">
         </div>
       </div>
       <div class="sleep-duration-badge" id="sleepDurationPreview">– Std.<small>Schlafdauer</small></div>
@@ -2001,21 +1854,10 @@ function renderSleepEditor(){
 
     <button class="btn-primary" style="margin-top:14px" onclick="saveSleepEditor()">✅ Speichern</button>
     <button class="btn-secondary" style="margin-top:6px;background:var(--gray);color:var(--gray-dark)" onclick="cancelSleepEditor()">Abbrechen</button>`;
-
-  buildMiniWheel('sleepWheelStartH',24);
-  buildMiniWheel('sleepWheelStartM',60);
-  buildMiniWheel('sleepWheelEndH',24);
-  buildMiniWheel('sleepWheelEndM',60);
-  const [sh,sm]=(sleepEditorState.start||'23:00').split(':').map(Number);
-  const [eh,em]=(sleepEditorState.end||'07:00').split(':').map(Number);
-  setTimeout(()=>{
-    setMiniWheelValue('sleepWheelStartH',sh||0,false);
-    setMiniWheelValue('sleepWheelStartM',sm||0,false);
-    setMiniWheelValue('sleepWheelEndH',eh||0,false);
-    setMiniWheelValue('sleepWheelEndM',em||0,false);
-    updateSleepDurationPreview();
-  },0);
+  updateSleepDurationPreview();
 }
+function setSleepEditorStart(val){ if(sleepEditorState){ sleepEditorState.start=val; if(sleepEditorState.endDate<sleepEditorState.date) sleepEditorState.endDate=sleepEditorState.date; updateSleepDurationPreview(); } }
+function setSleepEditorEnd(val){ if(sleepEditorState){ sleepEditorState.end=val; updateSleepDurationPreview(); } }
 function updateSleepDurationPreview(){
   const el=document.getElementById('sleepDurationPreview');
   if(!el||!sleepEditorState) return;
@@ -3293,7 +3135,7 @@ function showFoodSuggestions(rawValue){
   names.sort((a,b)=>scores[b]-scores[a]);
   const matches=names.slice(0,6);
   if(!matches.length){ box.innerHTML=''; return; }
-  box.innerHTML=matches.map(n=>`<button type="button" class="food-suggestion-chip" onclick="applyFoodSuggestion(${JSON.stringify(n)})">${n}</button>`).join('');
+  box.innerHTML=matches.map(n=>`<button type="button" class="food-suggestion-chip" onclick="applyFoodSuggestion(${JSON.stringify(n).replace(/"/g,'&quot;')})">${n}</button>`).join('');
 }
 function applyFoodSuggestion(name){
   const el=document.getElementById('inputFood');
@@ -3333,7 +3175,7 @@ function onStressFactorInput(el){
   if(!lastPart){ box.innerHTML=''; return; }
   const memory=db.stressFactorMemory||[];
   const matches=memory.filter(n=>n.toLowerCase().includes(lastPart)&&n.toLowerCase()!==lastPart).slice(0,6);
-  box.innerHTML=matches.map(n=>`<button type="button" class="food-suggestion-chip" onclick="applyStressFactorSuggestion(${JSON.stringify(n)})">${n}</button>`).join('');
+  box.innerHTML=matches.map(n=>`<button type="button" class="food-suggestion-chip" onclick="applyStressFactorSuggestion(${JSON.stringify(n).replace(/"/g,'&quot;')})">${n}</button>`).join('');
 }
 function applyStressFactorSuggestion(name){
   const el=document.getElementById('stressFactorInput');
@@ -3872,7 +3714,7 @@ function editEntry(id){
     }
   }
 
-  setMealWheelTime(e.time||nowTime());
+  document.getElementById('inputTime').value=e.time||nowTime();
   document.getElementById('inputFood').value=e.food||'';
   document.getElementById('inputDrink').value=e.drink||'';
   document.getElementById('inputNote').value=e.note||'';
@@ -3960,17 +3802,25 @@ const MEAL_SCHEDULE=[
 ];
 function getNextMealSlot(){
   const entries=(db.entries||[]).filter(e=>e.date===viewKey());
-  for(let i=0;i<MEAL_SCHEDULE.length;i++){
-    const slot=MEAL_SCHEDULE[i];
+  const isFulfilled=(slot,idx)=>{
     const slotH=timeToHour(slot.time);
-    const nextH=i+1<MEAL_SCHEDULE.length?timeToHour(MEAL_SCHEDULE[i+1].time):24;
-    const fulfilled=entries.some(e=>{
+    const nextH=idx+1<MEAL_SCHEDULE.length?timeToHour(MEAL_SCHEDULE[idx+1].time):24;
+    return entries.some(e=>{
       const eh=timeToHour(e.time);
       return e.type===slot.type&&eh!=null&&eh>=slotH&&eh<nextH;
     });
-    if(!fulfilled) return slot;
+  };
+  const nowP=viewKey()===todayKey()?swissNowParts():{hour:0,minute:0};
+  const nowH=nowP.hour+nowP.minute/60;
+  // Letzten Slot finden, dessen Zeit schon erreicht ist ("aktuell dran")
+  let activeIdx=-1;
+  for(let i=0;i<MEAL_SCHEDULE.length;i++){
+    if(timeToHour(MEAL_SCHEDULE[i].time)<=nowH) activeIdx=i;
   }
-  return null;
+  if(activeIdx===-1) return MEAL_SCHEDULE[0]; // noch vor dem ersten Slot des Tages
+  if(!isFulfilled(MEAL_SCHEDULE[activeIdx],activeIdx)) return MEAL_SCHEDULE[activeIdx]; // aktueller Slot noch offen
+  if(activeIdx+1<MEAL_SCHEDULE.length) return MEAL_SCHEDULE[activeIdx+1]; // aktueller erledigt -> nächster ansteht
+  return null; // letzter Slot war auch erledigt -> Tag komplett
 }
 function renderNextMealBadge(){
   const badge=document.getElementById('nextMealBadge');
