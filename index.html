@@ -6,33 +6,36 @@
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <meta name="apple-mobile-web-app-title" content="Ernährung">
-<meta name="theme-color" content="#12b886">
+<meta name="theme-color" content="#34B575">
 <title>🥗 Ernährungstagebuch</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
 :root{
-  --green:#0fa878;--green-light:#e2f7ef;
-  --blue:#3d7ef5;--blue-light:#e8f0ff;
-  --orange:#ff7a3d;--orange-light:#ffedE2;
-  --purple:#8b5cf6;--purple-light:#f0eafe;
-  --red:#f0454a;--red-light:#fdeaea;
-  --gray:#f2f3f5;--gray-dark:#888e99;--text:#14171c;--white:#fff;
-  --radius:20px;--radius-sm:13px;
-  --shadow:0 1px 2px rgba(20,23,28,.04),0 8px 22px rgba(20,23,28,.07);
-  --shadow-sm:0 1px 3px rgba(20,23,28,.06);
-  --tab-h:70px;
+  --green:#34B575;--green-light:#E4F6EC;
+  --blue:#5C8FA8;--blue-light:#E9F2F5;
+  --orange:#D98B3F;--orange-light:#FBEEE0;
+  --purple:#7C7FB0;--purple-light:#EDEEF6;
+  --red:#D14B4B;--red-light:#FBE7E7;
+  --gray:#F1F3F0;--gray-dark:#767D74;--text:#1C211D;--white:#fff;
+  --surface:#FFFFFF;--surface-2:#F6F8F5;
+  --radius:20px;--radius-sm:14px;
+  --shadow:0 1px 2px rgba(20,30,22,.03),0 8px 20px rgba(20,30,22,.06);
+  --shadow-sm:0 1px 4px rgba(20,30,22,.05);
+  --tab-h:72px;
   --font-serif:'Space Grotesk','Inter',-apple-system,sans-serif;
+  --aurora:linear-gradient(135deg,#3FC988 0%,#2FA968 55%,#1F8F55 100%);
 }
+html{color-scheme:light}
 *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
-body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f4f5f8;color:var(--text);min-height:100vh;padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased;overscroll-behavior-y:contain}
+body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:linear-gradient(180deg,#F8FAF7 0%,#F2F5F1 100%);color:var(--text);min-height:100vh;padding-bottom:calc(var(--tab-h) + env(safe-area-inset-bottom));-webkit-font-smoothing:antialiased;overscroll-behavior-y:contain}
 
-.header{background:linear-gradient(160deg,#0b3d2e 0%,#0fa878 48%,#0d8f9e 100%);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 20px 16px;position:sticky;top:0;z-index:100;border-radius:0 0 20px 20px;box-shadow:0 10px 28px rgba(11,61,46,.32);position:relative;overflow:hidden}
-.header::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.5),transparent)}
+.header{background:var(--aurora);color:#fff;padding:calc(14px + env(safe-area-inset-top)) 20px 16px;position:sticky;top:0;z-index:100;border-radius:0 0 24px 24px;box-shadow:0 8px 20px rgba(31,143,85,.24);position:relative;overflow:hidden}
+.header::before{content:'';position:absolute;top:0;left:0;right:0;height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.4),transparent)}
 .header-top-row{display:flex;align-items:center;justify-content:space-between;gap:10px;position:relative;z-index:1}
 .brand-lockup{display:flex;align-items:center;gap:9px;min-width:0;flex:1}
-.brand-mark{width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#c9ffe8,#12d69a 55%,#0a8f6e);box-shadow:0 0 0 4px rgba(255,255,255,.14);flex-shrink:0}
+.brand-mark{width:11px;height:11px;border-radius:50%;background:radial-gradient(circle at 32% 30%,#fff,#D6F2E2 55%,#34B575);box-shadow:0 0 0 4px rgba(255,255,255,.18);flex-shrink:0}
 .header-icons{display:flex;align-items:center;gap:8px;position:relative;z-index:1}
 .header-scan-btn.busy{opacity:.5;pointer-events:none}
 .header h1{font-family:var(--font-serif);font-size:21px;font-weight:700;letter-spacing:-.3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
@@ -53,19 +56,19 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .date-nav .date{margin-top:0;cursor:pointer}
 .date-nav .date.not-today{font-weight:700;text-decoration:underline;text-underline-offset:2px}
 
-.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--tab-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.92);-webkit-backdrop-filter:blur(20px);backdrop-filter:blur(20px);border-top:1px solid rgba(0,0,0,.06);display:flex;z-index:200;box-shadow:0 -4px 20px rgba(16,24,40,.06)}
-.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:4px;border:none;background:none;font-size:10.5px;font-weight:600;color:var(--gray-dark);cursor:pointer;padding-bottom:6px;transition:color .15s}
-.nav-btn.active{color:var(--green)}
-.nav-btn .icon{font-size:21px;line-height:1;transition:transform .15s}
-.nav-btn.active .icon{transform:translateY(-1px) scale(1.08)}
+.bottom-nav{position:fixed;bottom:0;left:0;right:0;height:calc(var(--tab-h) + env(safe-area-inset-bottom));padding-bottom:env(safe-area-inset-bottom);background:rgba(255,255,255,.88);-webkit-backdrop-filter:blur(22px);backdrop-filter:blur(22px);border-top:1px solid rgba(20,30,22,.06);display:flex;z-index:200;box-shadow:0 -6px 20px rgba(20,30,22,.05)}
+.nav-btn{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:5px;border:none;background:none;font-size:10.5px;font-weight:600;color:var(--gray-dark);cursor:pointer;padding-bottom:6px;transition:color .15s}
+.nav-btn .icon{width:36px;height:36px;display:flex;align-items:center;justify-content:center;border-radius:50%;font-size:18px;line-height:1;transition:background .18s,transform .18s}
+.nav-btn.active{color:#fff}
+.nav-btn.active .icon{background:var(--aurora);box-shadow:0 4px 16px rgba(31,143,85,.26);transform:translateY(-2px) scale(1.06)}
 
-.fab{position:fixed;bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom));right:18px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#0fa878,#3d7ef5);color:#fff;border:none;font-size:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 20px rgba(15,168,120,.4);z-index:150;cursor:pointer;transition:transform .15s}
+.fab{position:fixed;bottom:calc(var(--tab-h) + 16px + env(safe-area-inset-bottom));right:18px;width:58px;height:58px;border-radius:50%;background:var(--aurora);color:#fff;border:none;font-size:27px;display:flex;align-items:center;justify-content:center;box-shadow:0 8px 24px rgba(31,143,85,.26);z-index:150;cursor:pointer;transition:transform .15s}
 .fab:active{transform:scale(.9)}
 
 .screen{display:none;padding:14px}
 .screen.active{display:block}
 
-.card{background:#fff;border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
+.card{background:var(--surface);border:1px solid rgba(20,30,22,.05);border-radius:var(--radius);padding:16px;margin-bottom:12px;box-shadow:var(--shadow)}
 .card-title{font-family:var(--font-serif);font-size:13.5px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;margin-bottom:14px;color:var(--text)}
 .section-header{margin:24px 4px 10px;display:flex;align-items:center;gap:9px}
 .section-header span{font-family:var(--font-serif);font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:1.1px;color:var(--gray-dark);white-space:nowrap}
@@ -123,7 +126,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .check-block-label{font-size:11px;font-weight:700;color:var(--gray-dark);text-transform:uppercase;margin-bottom:8px;letter-spacing:.3px;display:flex;align-items:baseline;gap:6px;flex-wrap:wrap}
 
 .scale-row{display:flex;gap:6px}
-.scale-btn{flex:1;border:2px solid transparent;border-radius:12px;padding:8px 2px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;background:#fff;transition:all .15s;line-height:1.2}
+.scale-btn{flex:1;border:2px solid transparent;border-radius:12px;padding:8px 2px;font-size:12px;font-weight:700;text-align:center;cursor:pointer;background:var(--surface);transition:all .15s;line-height:1.2}
 .scale-btn small{display:block;font-size:9px;font-weight:400;margin-top:2px;opacity:.7}
 .scale-btn.stress-1.sel{background:#d4edda;border-color:#28a745;color:#155724}
 .scale-btn.stress-2.sel{background:#d4edda;border-color:#5cb85c;color:#155724}
@@ -152,7 +155,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .scale-btn.sev-5.sel{background:#f8d7da;border-color:#dc3545;color:#721c24}
 
 .work-row{display:flex;gap:7px}
-.work-btn{flex:1;border:2px solid #e0e0e0;border-radius:10px;padding:7px 3px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;background:#fff;transition:all .15s}
+.work-btn{flex:1;border:1.5px solid rgba(20,30,22,.12);border-radius:10px;padding:7px 3px;font-size:12px;font-weight:600;text-align:center;cursor:pointer;background:var(--surface);transition:all .15s}
 .work-btn .wicon{font-size:17px;display:block;margin-bottom:2px}
 .work-btn.sel-buero{background:var(--blue-light);border-color:var(--blue);color:var(--blue)}
 .work-btn.sel-homeoffice{background:var(--purple-light);border-color:var(--purple);color:var(--purple)}
@@ -180,7 +183,24 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .stool-add-btn:active{transform:scale(.98)}
 
 .schlaf-row{display:flex;gap:8px;align-items:center;margin-bottom:9px}
-.sleep-editor-card{background:linear-gradient(160deg,#1a2140 0%,#2d2f5e 55%,#3d3570 100%);border-radius:20px;padding:16px 14px;margin-top:10px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(26,33,64,.3)}
+.sleep-quick-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
+.sleep-quick-btn{position:relative;overflow:hidden;border:none;border-radius:18px;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#fff;transition:transform .12s;box-shadow:0 6px 16px rgba(20,30,22,.14)}
+.sleep-quick-btn:active{transform:scale(.96)}
+.sleep-quick-wake{background:var(--aurora)}
+.sleep-quick-bed{background:linear-gradient(160deg,#123321 0%,#1B5E3C 55%,#1F8F55 130%)}
+.sleep-quick-glow{position:absolute;top:-30%;right:-20%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%);pointer-events:none}
+.sleep-quick-icon{font-size:24px;position:relative;z-index:1}
+.sleep-quick-label{font-size:11.5px;font-weight:700;opacity:.95;position:relative;z-index:1}
+.sleep-quick-time{font-family:var(--font-serif);font-size:19px;font-weight:800;position:relative;z-index:1;letter-spacing:-.2px}
+.sleep-quick-cta{font-size:9.5px;font-weight:700;opacity:.8;margin-top:2px;position:relative;z-index:1;letter-spacing:.2px}
+.sleep-quick-edit-row{align-items:flex-start;background:var(--purple-light)}
+.sleep-quick-edit-fields{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
+.sleep-quick-edit-times{display:flex;align-items:center;gap:8px}
+.sleep-quick-edit-times .time-input{padding:8px 8px;font-size:15px}
+.sleep-quick-edit-arrow{color:var(--gray-dark);opacity:.6;flex-shrink:0}
+.sleep-quick-edit-more{align-self:flex-start;background:none;border:none;color:var(--purple);font-size:11px;font-weight:700;text-decoration:underline;cursor:pointer;padding:2px 0}
+.sleep-quick-edit-done{background:var(--green);color:#fff}
+.sleep-editor-card{background:linear-gradient(160deg,#0F1F16 0%,#163B27 55%,#1F8F55 130%);border-radius:20px;padding:16px 14px;margin-top:10px;color:#fff;position:relative;overflow:hidden;box-shadow:0 8px 24px rgba(15,27,61,.3)}
 .sleep-editor-card::before{content:'';position:absolute;top:-30px;right:-24px;width:110px;height:110px;background:radial-gradient(circle,rgba(255,255,255,.09),transparent 70%);border-radius:50%;pointer-events:none}
 .sleep-editor-cols{display:flex;align-items:flex-start;gap:4px;position:relative;z-index:1}
 .sleep-editor-col{flex:1;text-align:center;min-width:0}
@@ -191,11 +211,11 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .sleep-duration-badge{display:block;text-align:center;margin-top:16px;font-family:var(--font-serif);font-size:23px;font-weight:800;position:relative;z-index:1;letter-spacing:-.3px}
 .sleep-duration-badge small{display:block;font-size:9.5px;font-weight:700;opacity:.65;text-transform:uppercase;letter-spacing:.6px;margin-top:2px}
 .schlaf-hours{width:68px;background:var(--gray);border:2px solid transparent;border-radius:10px;padding:8px 10px;font-size:15px;font-family:inherit;color:var(--text);outline:none;text-align:center;-webkit-appearance:none}
-.schlaf-hours:focus{border-color:var(--green);background:#fff}
+.schlaf-hours:focus{border-color:var(--green);background:var(--surface)}
 .schlaf-hours-btn{background:none;border:none;padding:3px 2px;font-size:13px;font-family:inherit;font-weight:600;color:var(--gray-dark);text-align:center;cursor:pointer;display:inline-flex;align-items:baseline;gap:3px;text-decoration:underline;text-decoration-color:#ccc;text-underline-offset:2px}
 .schlaf-hours-btn:active{color:var(--green)}
 .schlaf-hours-btn small{font-size:9px;font-weight:600;color:var(--gray-dark);text-transform:uppercase}
-.sleep-popover{display:none;position:absolute;top:100%;left:0;margin-top:6px;background:#fff;border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.16);padding:6px;z-index:60;width:140px}
+.sleep-popover{display:none;position:absolute;top:100%;left:0;margin-top:6px;background:var(--surface);border-radius:14px;box-shadow:0 8px 22px rgba(0,0,0,.16);padding:6px;z-index:60;width:140px}
 .sleep-popover.open{display:block}
 
 /* ── GUTTY MASKOTTCHEN ─────────────────────────────────────── */
@@ -203,7 +223,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .gutty-row{display:flex;align-items:center;gap:12px}
 .gutty-figure{flex-shrink:0;filter:drop-shadow(0 4px 6px rgba(0,0,0,.12))}
 .gutty-figure.celebrate #guttyConfetti{display:block}
-.gutty-speech{background:#fff;border-radius:14px;padding:9px 12px;position:relative;flex:1}
+.gutty-speech{background:var(--surface);border-radius:14px;padding:9px 12px;position:relative;flex:1}
 .gutty-speech::before{content:'';position:absolute;left:-7px;top:20px;border:7px solid transparent;border-right-color:#fff}
 .gutty-name{font-size:11px;font-weight:800;color:#e65100;text-transform:uppercase;letter-spacing:.4px;margin-bottom:2px}
 .gutty-message{font-size:13px;line-height:1.4;color:var(--text);font-weight:600}
@@ -212,17 +232,17 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .gutty-progress-fill{height:100%;background:linear-gradient(90deg,#66BB6A,#9CCC65);border-radius:6px;transition:width .3s}
 .gutty-progress-label{font-size:11px;font-weight:700;color:#e65100;white-space:nowrap}
 .gutty-level-row{display:flex;align-items:center;gap:8px;margin-top:10px}
-.gutty-level-badge{font-size:10.5px;font-weight:800;background:#fff;padding:5px 10px;border-radius:20px;color:#6a1b9a;white-space:nowrap}
+.gutty-level-badge{font-size:10.5px;font-weight:800;background:var(--surface);padding:5px 10px;border-radius:20px;color:var(--green);white-space:nowrap}
 .gutty-level-bar{flex:1;height:8px;background:rgba(255,255,255,.6);border-radius:5px;overflow:hidden}
-.gutty-level-fill{height:100%;background:linear-gradient(90deg,#7c4dff,#b388ff);border-radius:5px;transition:width .3s}
-.gutty-level-xp{font-size:10px;font-weight:700;color:#6a1b9a;white-space:nowrap}
+.gutty-level-fill{height:100%;background:linear-gradient(90deg,#34B575,#6FD69D);border-radius:5px;transition:width .3s}
+.gutty-level-xp{font-size:10px;font-weight:700;color:var(--green);white-space:nowrap}
 .gutty-streak-best{font-size:10.5px;color:#e65100;opacity:.8;margin-top:5px;font-weight:600}
 .gutty-badges-label{font-size:11px;font-weight:700;color:#e65100;text-transform:uppercase;margin-top:14px;margin-bottom:8px;letter-spacing:.3px}
 .gutty-badges-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:7px}
 @media (max-width:360px){
   .gutty-badges-grid{grid-template-columns:repeat(4,1fr)}
 }
-.gutty-badge{aspect-ratio:1;border-radius:14px;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;opacity:.32;filter:grayscale(1);transition:transform .15s}
+.gutty-badge{aspect-ratio:1;border-radius:14px;background:var(--surface);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:2px;opacity:.32;filter:grayscale(1);transition:transform .15s}
 .gutty-badge.unlocked{opacity:1;filter:none;box-shadow:0 2px 8px rgba(0,0,0,.12)}
 .gutty-badge:active{transform:scale(.92)}
 .gutty-badge-icon{font-size:18px}
@@ -246,6 +266,8 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .timeline-bar-wrap{position:relative}
 .timeline-track{position:relative;height:14px;border-radius:7px;overflow:hidden;background:#4a5a72;box-shadow:0 1px 2px rgba(0,0,0,.12)}
 .timeline-markers{position:absolute;inset:0;pointer-events:none}
+.timeline-subtrack{position:relative;height:5px;border-radius:3px;background:transparent;margin-top:6px;overflow:hidden}
+.timeline-subtrack-fill{position:absolute;top:0;bottom:0;background:#9aa1ab;border-radius:3px}
 .timeline-hours{display:flex;justify-content:space-between;margin-top:7px;padding:0 1px}
 .timeline-hours span{font-size:9px;color:var(--gray-dark);font-weight:600}
 .tl-marker{position:absolute;bottom:100%;transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;cursor:default;z-index:3;pointer-events:auto}
@@ -263,8 +285,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .tl-legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:var(--gray-dark);font-weight:600}
 .tl-legend-dot{width:9px;height:9px;border-radius:50%;flex-shrink:0}
 .timeline-bar-wrap{-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
-.timeline-sleep-overlay{position:absolute;top:0;bottom:0;background:linear-gradient(180deg,rgba(10,12,20,.5),rgba(10,12,20,.62));-webkit-backdrop-filter:blur(1.5px) saturate(60%);backdrop-filter:blur(1.5px) saturate(60%);border-left:1px solid rgba(255,255,255,.18);border-right:1px solid rgba(255,255,255,.18)}
-.timeline-sleep-icon{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);font-size:11px;opacity:.85;filter:drop-shadow(0 1px 1px rgba(0,0,0,.4))}
 .tl-detail-row{display:flex;gap:12px;padding:9px 0;border-bottom:1px solid #f0f0f0;font-size:13px;align-items:baseline}
 .tl-detail-row:last-child{border-bottom:none}
 .tl-detail-time{font-weight:800;color:var(--green);min-width:44px;flex-shrink:0}
@@ -272,9 +292,9 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .gutty-chat{max-height:190px;overflow-y:auto;margin-top:12px;display:flex;flex-direction:column;gap:7px;padding-right:2px}
 .gutty-msg{max-width:85%;padding:8px 12px;border-radius:15px;font-size:12.5px;line-height:1.45}
 .gutty-msg.user{align-self:flex-end;background:var(--green);color:#fff;border-bottom-right-radius:4px}
-.gutty-msg.gutty{align-self:flex-start;background:#fff;color:var(--text);border-bottom-left-radius:4px;box-shadow:var(--shadow-sm)}
+.gutty-msg.gutty{align-self:flex-start;background:var(--surface);color:var(--text);border-bottom-left-radius:4px;box-shadow:var(--shadow-sm)}
 .gutty-chat-input-row{display:flex;gap:8px;margin-top:10px}
-.gutty-chat-input-row .form-input{background:#fff}
+.gutty-chat-input-row .form-input{background:var(--surface)}
 .gutty-chat-send{width:42px;height:42px;border-radius:50%;background:var(--green);color:#fff;border:none;font-size:16px;cursor:pointer;flex-shrink:0;display:flex;align-items:center;justify-content:center}
 .gutty-chat-send:active{transform:scale(.9)}
 
@@ -300,16 +320,16 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .entry-edit-panel.open{display:block}
 .ep-row{display:flex;gap:7px;align-items:center;margin-bottom:8px}
 .ep-time-inp{background:var(--gray);border:2px solid transparent;border-radius:9px;padding:7px 9px;font-size:16px;font-family:inherit;outline:none;width:92px;-webkit-appearance:none;color:var(--text)}
-.ep-time-inp:focus{border-color:var(--green);background:#fff}
+.ep-time-inp:focus{border-color:var(--green);background:var(--surface)}
 .ep-type-row{display:flex;gap:4px;flex:1;justify-content:flex-end;flex-wrap:wrap}
 .ep-type-btn{background:var(--gray);border:2px solid transparent;border-radius:8px;padding:5px 6px;font-size:15px;cursor:pointer;line-height:1;transition:all .12s}
 .ep-type-btn.sel{background:var(--green-light);border-color:var(--green)}
 .ep-inp{width:100%;background:var(--gray);border:2px solid transparent;border-radius:9px;padding:9px 11px;font-size:16px;font-family:inherit;color:var(--text);outline:none;margin-bottom:7px;-webkit-appearance:none}
-.ep-inp:focus{border-color:var(--green);background:#fff}
+.ep-inp:focus{border-color:var(--green);background:var(--surface)}
 .ep-feel-row{display:flex;gap:5px;margin-bottom:8px}
 .ep-sublabel{font-size:10px;font-weight:700;color:var(--gray-dark);text-transform:uppercase;letter-spacing:.4px;margin-bottom:5px}
 .ep-stress-row{display:flex;gap:5px;margin-bottom:9px}
-.ep-stress-btn{flex:1;border:2px solid #ddd;border-radius:8px;padding:7px 2px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;background:#fff;transition:all .12s}
+.ep-stress-btn{flex:1;border:1.5px solid rgba(20,30,22,.12);border-radius:8px;padding:7px 2px;font-size:13px;font-weight:700;text-align:center;cursor:pointer;background:var(--surface);transition:all .12s}
 .ep-s1.sel{background:#d4edda;border-color:#28a745;color:#155724}
 .ep-s2.sel{background:#d4edda;border-color:#5cb85c;color:#155724}
 .ep-s3.sel{background:#fff3cd;border-color:#ffc107;color:#856404}
@@ -318,7 +338,7 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .ep-btn-row{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:4px}
 .ep-save{background:var(--green);color:#fff;border:none;border-radius:10px;padding:11px;font-size:14px;font-weight:700;cursor:pointer}
 .ep-save:active{opacity:.85}
-.ep-cancel{background:var(--gray);color:var(--gray-dark);border:2px solid #ddd;border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer}
+.ep-cancel{background:var(--gray);color:var(--gray-dark);border:1.5px solid rgba(20,30,22,.12);border-radius:10px;padding:11px;font-size:14px;font-weight:600;cursor:pointer}
 
 .empty{text-align:center;padding:28px 20px;color:var(--gray-dark)}
 .mahlzeiten-card{cursor:pointer;transition:transform .1s}
@@ -336,21 +356,21 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 /* MODAL */
 .modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:300;align-items:flex-end}
 .modal-overlay.open{display:flex}
-.modal{background:#fff;border-radius:24px 24px 0 0;width:100%;max-height:93vh;overflow-y:auto;animation:slideUp .25s ease}
+.modal{background:var(--surface);border-radius:24px 24px 0 0;width:100%;max-height:93vh;overflow-y:auto;animation:slideUp .25s ease}
 @keyframes slideUp{from{transform:translateY(100%)}to{transform:translateY(0)}}
-.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 0;position:sticky;top:0;background:#fff;z-index:10;border-radius:24px 24px 0 0}
+.modal-header{display:flex;align-items:center;justify-content:space-between;padding:18px 18px 0;position:sticky;top:0;background:var(--surface);z-index:10;border-radius:24px 24px 0 0}
 .modal-header h2{font-family:var(--font-serif);font-size:20px;font-weight:800;letter-spacing:-.3px}
 .modal-close{background:#eee;border:none;border-radius:50%;width:30px;height:30px;font-size:17px;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .modal-body{padding:13px 18px 32px}
 
 .mini-modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:400;align-items:flex-end}
 .mini-modal-overlay.open{display:flex}
-.mini-modal{background:#fff;border-radius:24px 24px 0 0;width:100%;padding:18px 18px 34px;animation:slideUp .2s ease}
+.mini-modal{background:var(--surface);border-radius:24px 24px 0 0;width:100%;padding:18px 18px 34px;animation:slideUp .2s ease}
 
 .form-group{margin-bottom:14px}
 .form-label{font-size:12px;font-weight:600;color:var(--gray-dark);margin-bottom:6px;display:block}
 .form-input{width:100%;background:var(--gray);border:2px solid transparent;border-radius:var(--radius-sm);padding:11px 13px;font-size:16px;font-family:inherit;color:var(--text);outline:none;transition:border-color .15s;-webkit-appearance:none}
-.form-input:focus{border-color:var(--green);background:#fff}
+.form-input:focus{border-color:var(--green);background:var(--surface)}
 textarea.form-input{min-height:68px;resize:none}
 
 .type-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
@@ -369,14 +389,14 @@ textarea.form-input{min-height:68px;resize:none}
 .time-field-row{display:grid;grid-template-columns:1fr 1fr;gap:7px;margin-top:10px}
 .time-input{padding:9px 11px;font-size:16px}
 .sub-label{font-size:11px;font-weight:700;color:var(--gray-dark);text-transform:uppercase;margin:11px 0 7px;letter-spacing:.3px}
-.akt-editor{background:#fff;border-radius:var(--radius-sm);padding:12px;margin-top:10px;box-shadow:var(--shadow-sm);border:2px solid var(--green-light)}
+.akt-editor{background:var(--surface);border-radius:var(--radius-sm);padding:12px;margin-top:10px;box-shadow:var(--shadow-sm);border:2px solid var(--green-light)}
 .akt-editor-header{display:flex;align-items:center;gap:10px;margin-bottom:12px}
 .akt-editor-icon{width:38px;height:38px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:19px;flex-shrink:0}
 .akt-editor-title{font-size:15px;font-weight:800;color:var(--text)}
-.akt-row{display:flex;align-items:center;gap:11px;background:#fff;border-radius:var(--radius-sm);padding:9px 12px;margin-top:8px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .1s}
+.akt-row{display:flex;align-items:center;gap:11px;background:var(--surface);border-radius:var(--radius-sm);padding:9px 12px;margin-top:8px;box-shadow:var(--shadow-sm);cursor:pointer;transition:transform .1s}
 .supp-drag-row{cursor:grab;user-select:none;-webkit-user-select:none}
 .supp-drag-handle{font-size:15px;color:var(--gray-dark);opacity:.5;flex-shrink:0;cursor:grab}
-.supp-drag-row.dragging{box-shadow:0 8px 20px rgba(0,0,0,.18);opacity:.92;position:relative;z-index:20;background:#fff;cursor:grabbing;transition:none}
+.supp-drag-row.dragging{box-shadow:0 8px 20px rgba(0,0,0,.18);opacity:.92;position:relative;z-index:20;background:var(--surface);cursor:grabbing;transition:none}
 .akt-row:active{transform:scale(.98)}
 .akt-row-icon{width:36px;height:36px;border-radius:50%;background:var(--green-light);display:flex;align-items:center;justify-content:center;font-size:17px;flex-shrink:0}
 .akt-row-info{flex:1;display:flex;flex-direction:column;gap:1px;min-width:0}
@@ -389,7 +409,7 @@ textarea.form-input{min-height:68px;resize:none}
 .akt-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
 .akt-tile{background:var(--gray);border:2px solid transparent;border-radius:16px;padding:11px 4px 9px;display:flex;flex-direction:column;align-items:center;gap:6px;cursor:pointer;transition:all .15s;position:relative}
 .akt-tile:active{transform:scale(.93)}
-.akt-tile-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;background:#fff;box-shadow:0 1px 3px rgba(16,24,40,.08)}
+.akt-tile-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:19px;background:var(--surface);box-shadow:0 1px 3px rgba(16,24,40,.08)}
 .akt-tile-label{font-size:10.5px;font-weight:700;color:var(--text);text-align:center;line-height:1.15}
 .akt-tile.selected{background:var(--green-light);border-color:var(--green)}
 .akt-tile.picking{background:var(--blue-light);border-color:var(--blue);box-shadow:0 0 0 2px var(--blue-light)}
@@ -419,14 +439,14 @@ textarea.form-input{min-height:68px;resize:none}
 
 .stress-modal-row{display:flex;gap:5px}
 
-.btn-primary{width:100%;background:linear-gradient(135deg,#0fa878,#0d9e8f);color:#fff;border:none;border-radius:var(--radius-sm);padding:15px;font-family:var(--font-serif);font-size:15.5px;font-weight:700;letter-spacing:.2px;cursor:pointer;margin-top:7px;transition:transform .12s,opacity .15s;box-shadow:0 6px 18px rgba(15,168,120,.3)}
+.btn-primary{width:100%;background:var(--aurora);color:#fff;border:none;border-radius:var(--radius-sm);padding:15px;font-family:var(--font-serif);font-size:15.5px;font-weight:700;letter-spacing:.2px;cursor:pointer;margin-top:7px;transition:transform .12s,opacity .15s;box-shadow:0 6px 20px rgba(31,143,85,.2)}
 .btn-primary:active{opacity:.9;transform:scale(.98)}
-.btn-secondary{background:var(--green-light);color:var(--green);border:none;border-radius:var(--radius-sm);padding:12px 18px;font-family:var(--font-serif);font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:7px;transition:transform .12s}
+.btn-secondary{background:var(--green-light);color:var(--green);border:1px solid rgba(92,127,102,.18);border-radius:var(--radius-sm);padding:12px 18px;font-family:var(--font-serif);font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:7px;transition:transform .12s}
 .btn-secondary:active{transform:scale(.98)}
-.btn-danger{background:var(--red-light);color:var(--red);border:none;border-radius:var(--radius-sm);padding:12px 18px;font-family:var(--font-serif);font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:7px;transition:transform .12s}
+.btn-danger{background:var(--red-light);color:var(--red);border:1px solid rgba(180,87,76,.2);border-radius:var(--radius-sm);padding:12px 18px;font-family:var(--font-serif);font-size:14px;font-weight:700;cursor:pointer;width:100%;margin-top:7px;transition:transform .12s}
 .btn-danger:active{transform:scale(.98)}
 
-.week-day{background:#fff;border-radius:var(--radius);margin-bottom:9px;overflow:hidden;box-shadow:var(--shadow)}
+.week-day{background:var(--surface);border-radius:var(--radius);margin-bottom:9px;overflow:hidden;box-shadow:var(--shadow)}
 .week-day-header{padding:11px 14px;background:var(--green-light);display:flex;justify-content:space-between;align-items:center;cursor:pointer}
 .week-day-title{font-weight:700;color:var(--green);font-size:14px}
 .week-day-count{font-size:11px;color:var(--gray-dark)}
@@ -517,7 +537,7 @@ textarea.form-input{min-height:68px;resize:none}
 .ep-fi-line1 .ep-fi-menge{flex:1;min-width:0}
 .ep-fi-line2{display:flex;gap:5px}
 .ep-fi-line2 input{flex:1;min-width:0}
-.ep-fi-name,.ep-fi-menge,.ep-fi-num{border:1px solid #ddd;border-radius:8px;padding:7px 7px;font-size:16px;box-sizing:border-box;background:#fff}
+.ep-fi-name,.ep-fi-menge,.ep-fi-num{border:1px solid rgba(20,30,22,.12);border-radius:8px;padding:7px 7px;font-size:16px;box-sizing:border-box;background:var(--surface)}
 .ep-fi-del{background:#f8d7da;color:#721c24;border:none;border-radius:8px;width:28px;flex-shrink:0;font-size:13px;cursor:pointer}
 .ep-fi-add{width:100%;background:var(--gray);border:2px dashed #d5d5d5;border-radius:var(--radius-sm);padding:9px;font-size:12px;font-weight:600;color:var(--gray-dark);cursor:pointer;margin-bottom:10px;transition:transform .12s}
 .ep-fi-add:active{transform:scale(.98)}
@@ -527,7 +547,7 @@ textarea.form-input{min-height:68px;resize:none}
 .switch input{opacity:0;width:0;height:0}
 .switch-slider{position:absolute;cursor:pointer;inset:0;background:#ccc;border-radius:26px;transition:.2s}
 .switch-slider::before{content:'';position:absolute;height:20px;width:20px;left:3px;bottom:3px;background:#fff;border-radius:50%;transition:.2s;box-shadow:0 1px 3px rgba(0,0,0,.3)}
-.switch input:checked+.switch-slider{background:#c2185b}
+.switch input:checked+.switch-slider{background:#34B575}
 .switch input:checked+.switch-slider::before{transform:translateX(20px)}
 
 /* ── PERIODE-KACHEL (ein-/ausblendbar) ────────────────────────── */
@@ -543,7 +563,7 @@ textarea.form-input{min-height:68px;resize:none}
 .ft-row{display:flex;gap:6px;margin-bottom:7px;align-items:center}
 .ft-row .ft-name{flex:2;min-width:0}
 .ft-row .ft-menge{flex:1;min-width:0}
-.ft-name,.ft-menge{border:1px solid #ddd;border-radius:9px;padding:9px 10px;font-size:16px;box-sizing:border-box;font-family:inherit}
+.ft-name,.ft-menge{border:1px solid rgba(20,30,22,.12);border-radius:9px;padding:9px 10px;font-size:16px;box-sizing:border-box;font-family:inherit;background:var(--surface);color:var(--text)}
 .ft-del{background:#f8d7da;color:#721c24;border:none;border-radius:8px;width:30px;height:36px;flex-shrink:0;font-size:14px;cursor:pointer}
 
 /* ── FOTO QUICK CAPTURE CARD ──────────────────────────────── */
@@ -558,7 +578,7 @@ textarea.form-input{min-height:68px;resize:none}
 .pq-icon-svg{color:#fff;position:relative;z-index:1}
 .pq-label{font-size:14.5px;font-weight:700;letter-spacing:.1px}
 .pq-badge-ai{font-size:9.5px;font-weight:800;background:rgba(255,255,255,.16);padding:4px 11px;border-radius:20px;letter-spacing:.4px;text-transform:uppercase}
-.photo-quick-status{background:#fff;border-radius:var(--radius);box-shadow:var(--shadow);font-size:13px;line-height:1.55;color:var(--text);display:none}
+.photo-quick-status{background:var(--surface);border-radius:var(--radius);box-shadow:var(--shadow);font-size:13px;line-height:1.55;color:var(--text);display:none}
 .photo-quick-status.show{display:block;padding:16px;margin-bottom:12px}
 .photo-quick-hint{font-size:11px;opacity:.5;text-align:center;margin-top:9px;line-height:1.4}
 .pq-thumb{width:100%;max-height:150px;object-fit:cover;border-radius:10px;margin-bottom:8px;display:block}
@@ -621,11 +641,42 @@ textarea.form-input{min-height:68px;resize:none}
         <div class="timeline-track" id="timelineTrack"></div>
         <div class="timeline-markers" id="timelineMarkers"></div>
       </div>
+      <div class="timeline-subtrack" id="timelineSubtrack"></div>
       <div class="timeline-hours">
         <span>0</span><span>3</span><span>6</span><span>9</span><span>12</span><span>15</span><span>18</span><span>21</span><span>24</span>
       </div>
     </div>
     <div class="timeline-legend" id="timelineLegend"></div>
+  </div>
+
+  <!-- SCHLAF (unter Tagesverlauf, rutscht nach vollständigem Eintrag unter die Tagesnotiz) -->
+  <div class="card" id="sleepCard">
+    <div class="card-title">😴 Schlaf</div>
+    <div class="sleep-quick-row">
+      <button type="button" class="sleep-quick-btn sleep-quick-wake" onclick="quickWakeUp()">
+        <span class="sleep-quick-glow"></span>
+        <span class="sleep-quick-icon">🌅</span>
+        <span class="sleep-quick-label">Aufgestanden</span>
+        <span class="sleep-quick-time" id="quickWakeTime">–:–</span>
+        <span class="sleep-quick-cta">Jetzt eintragen ›</span>
+      </button>
+      <button type="button" class="sleep-quick-btn sleep-quick-bed" onclick="quickBedtime()">
+        <span class="sleep-quick-glow"></span>
+        <span class="sleep-quick-icon">🌙</span>
+        <span class="sleep-quick-label">Gehe schlafen</span>
+        <span class="sleep-quick-time" id="quickBedTime">–:–</span>
+        <span class="sleep-quick-cta">Jetzt eintragen ›</span>
+      </button>
+    </div>
+    <div id="sleepSessionsList"></div>
+    <button type="button" class="btn-secondary" style="background:var(--purple-light);color:var(--purple);margin-top:8px" onclick="addSleepSession()">➕ Schlafphase manuell hinzufügen</button>
+    <div class="akt-editor" id="sleepEditor" style="display:none"></div>
+    <div style="font-size:11.5px;color:var(--gray-dark);margin-top:9px;font-weight:600" id="sleepTotalSummary"></div>
+    <div class="sub-label" style="margin-top:12px">Schlafqualität (gesamt heute)</div>
+    <div class="range-row" style="margin-top:4px">
+      <input type="range" min="1" max="5" step="1" value="3" class="range-slider" id="schlafRange" oninput="setRangeScale(this,'schlafQualitaet')">
+      <div class="range-value" id="schlafRangeValue">–</div>
+    </div>
   </div>
 
   <input type="file" accept="image/*" id="quickPhotoFile" style="display:none" onchange="quickPhotoCapture(event)">
@@ -764,19 +815,6 @@ textarea.form-input{min-height:68px;resize:none}
   <!-- TAGES-CHECK -->
   <div class="card">
     <div class="card-title">🌅 Tages-Check</div>
-    <div class="check-block">
-      <div class="check-block-label">😴 Schlaf</div>
-      <div style="font-size:11px;color:var(--gray-dark);margin-bottom:8px">Für Schichtdienst: beliebig viele Schlafphasen zu jeder Tageszeit — Hauptschlaf oder Nap.</div>
-      <div id="sleepSessionsList"></div>
-      <button type="button" class="btn-secondary" style="background:var(--purple-light);color:var(--purple);margin-top:2px" onclick="addSleepSession()">➕ Schlafphase hinzufügen</button>
-      <div class="akt-editor" id="sleepEditor" style="display:none"></div>
-      <div style="font-size:11.5px;color:var(--gray-dark);margin-top:9px;font-weight:600" id="sleepTotalSummary"></div>
-      <div class="sub-label" style="margin-top:12px">Schlafqualität (gesamt heute)</div>
-      <div class="range-row" style="margin-top:4px">
-        <input type="range" min="1" max="5" step="1" value="3" class="range-slider" id="schlafRange" oninput="setRangeScale(this,'schlafQualitaet')">
-        <div class="range-value" id="schlafRangeValue">–</div>
-      </div>
-    </div>
     <div class="check-block">
       <div class="check-block-label">💼 Arbeit heute</div>
       <div class="work-row">
@@ -1098,7 +1136,7 @@ textarea.form-input{min-height:68px;resize:none}
         <b>3.</b> Für jede gewünschte Metrik eine „Gesundheitsprobe abrufen"-Aktion hinzufügen (Schlafanalyse, Schritte, Aktive Energie, Ruheherzfrequenz, Gewicht) und jeweils in Text umwandeln<br>
         <b>4.</b> Aktion <b>„Text"</b>: alle Werte gemäß Format unten zu einer Zeile zusammensetzen<br>
         <b>5.</b> Aktion <b>„URL"</b> mit der Basis-URL + deiner zusammengesetzten Zeile:<br>
-        <div style="background:#fff;border-radius:8px;padding:8px 10px;margin:5px 0;font-size:10.5px;font-family:monospace;word-break:break-all;color:var(--blue)" id="healthUrl">⏳ Lade URL…</div>
+        <div style="background:var(--surface);border-radius:8px;padding:8px 10px;margin:5px 0;font-size:10.5px;font-family:monospace;word-break:break-all;color:var(--blue)" id="healthUrl">⏳ Lade URL…</div>
         <b>6.</b> Aktion <b>„URL öffnen"</b> hinzufügen — fertig
       </div>
       <div style="font-size:11px;color:var(--gray-dark);margin-top:10px;line-height:1.7">
@@ -1463,13 +1501,15 @@ async function renderTimeline(){
   track.style.background=buildDayGradient(sun.sunrise,sun.sunset);
 
   let trackHtml='';
+  let subtrackHtml='';
   (d.sleepSessions||[]).forEach(s=>{
     const startH=timeToHour(s.start), endHraw=timeToHour(s.end);
     if(startH==null||endHraw==null) return;
     const endH=endHraw<=startH?24:endHraw; // über Mitternacht: bis Tagesende zeigen
-    const icon=s.type==='Nap'?'💤':'😴';
-    trackHtml+=`<div class="timeline-sleep-overlay" style="left:${tlPct(startH)}%;width:${(tlPct(endH)-tlPct(startH)).toFixed(2)}%" title="${s.type}: ${s.start}–${s.end}"><span class="timeline-sleep-icon">${icon}</span></div>`;
+    subtrackHtml+=`<div class="timeline-subtrack-fill" style="left:${tlPct(startH)}%;width:${(tlPct(endH)-tlPct(startH)).toFixed(2)}%" title="${s.type}: ${s.start}–${s.end}"></div>`;
   });
+  const subtrack=document.getElementById('timelineSubtrack');
+  if(subtrack) subtrack.innerHTML=subtrackHtml;
   if(d.arbeitBeginn&&d.arbeitEnde){
     const b=timeToHour(d.arbeitBeginn), e=timeToHour(d.arbeitEnde);
     if(b!=null&&e!=null&&e>b){
@@ -1757,6 +1797,7 @@ function dateTimeToMs(dateKeyStr,timeStr){
   return new Date(y,m-1,dd,hh,mm).getTime();
 }
 function sessionDurationHoursV2(s){
+  if(!s.end) return 0; // offene, noch laufende Schlafphase
   const endDate=s.endDate||s.date;
   const startMs=dateTimeToMs(s.date,s.start);
   let endMs=dateTimeToMs(endDate,s.end);
@@ -1810,6 +1851,7 @@ function saveSleepEditor(){
   renderSleepEditor();
   renderSleepSessionsList();
   renderTimeline();
+  applySleepCardPosition();
   toast('✅ Schlafphase gespeichert');
 }
 function removeSleepSession(idx){
@@ -1822,6 +1864,7 @@ function removeSleepSession(idx){
   renderSleepEditor();
   renderSleepSessionsList();
   renderTimeline();
+  applySleepCardPosition();
 }
 
 function renderSleepEditor(){
@@ -1874,25 +1917,155 @@ function renderSleepSessionsList(){
       const icon=s.type==='Nap'?'💤':'😴';
       const dateLabel=(s.date&&s.date!==viewKey())?formatShortDate(s.date)+' · ':'';
       const crossesDay=s.endDate&&s.endDate!==s.date;
+      if(sleepQuickEditIdx===idx){
+        return `
+        <div class="akt-row sleep-quick-edit-row">
+          <div class="akt-row-icon">${icon}</div>
+          <div class="sleep-quick-edit-fields">
+            <span class="akt-row-name">${s.type}</span>
+            <div class="sleep-quick-edit-times">
+              <input type="time" class="form-input time-input" value="${s.start||''}" oninput="quickEditSleepStart(${idx},this.value)">
+              <span class="sleep-quick-edit-arrow">→</span>
+              <input type="time" class="form-input time-input" value="${s.end||''}" oninput="quickEditSleepEnd(${idx},this.value)">
+            </div>
+            <button type="button" class="sleep-quick-edit-more" onclick="event.stopPropagation();openFullSleepEditor(${idx})">Art/Datum ändern</button>
+          </div>
+          <button type="button" class="akt-row-del sleep-quick-edit-done" onclick="event.stopPropagation();quickEditSleepSession(${idx})">✓</button>
+        </div>`;
+      }
+      const meta=!s.end
+        ? `${dateLabel}${s.start} – läuft noch…`
+        : `${dateLabel}${s.start}${crossesDay?' → '+formatShortDate(s.endDate)+' ':'–'}${s.end} · ${dur.toFixed(1)} Std.`;
       return `
-      <div class="akt-row" onclick="editSleepSession(${idx})">
+      <div class="akt-row" onclick="quickEditSleepSession(${idx})">
         <div class="akt-row-icon">${icon}</div>
         <div class="akt-row-info">
           <span class="akt-row-name">${s.type}</span>
-          <span class="akt-row-meta">${dateLabel}${s.start}${crossesDay?' → '+formatShortDate(s.endDate)+' ':'–'}${s.end} · ${dur.toFixed(1)} Std.</span>
+          <span class="akt-row-meta">${meta}</span>
         </div>
         <button type="button" class="akt-row-del" onclick="event.stopPropagation();removeSleepSession(${idx})">−</button>
       </div>`;
     }).join('');
   }
+  updateSleepTotalSummary();
+}
+function updateSleepTotalSummary(){
+  const sessions=(getTodayData().sleepSessions)||[];
   const total=computeTotalSleepHours(sessions);
   const summary=document.getElementById('sleepTotalSummary');
   if(summary) summary.textContent=sessions.length?`Gesamt: ${total} Std. Schlaf heute (${sessions.length} Phase${sessions.length>1?'n':''})`:'Noch keine Schlafphase erfasst.';
 }
+let sleepQuickEditIdx=null;
+function quickEditSleepSession(idx){
+  sleepQuickEditIdx=(sleepQuickEditIdx===idx)?null:idx;
+  renderSleepSessionsList();
+}
+function quickEditSleepStart(idx,val){
+  const d=getTodayData();
+  const s=d.sleepSessions&&d.sleepSessions[idx];
+  if(!s) return;
+  s.start=val;
+  d.schlafStunden=computeTotalSleepHours(d.sleepSessions);
+  save();
+  updateSleepTotalSummary();
+  renderTimeline();
+  applySleepCardPosition();
+}
+function quickEditSleepEnd(idx,val){
+  const d=getTodayData();
+  const s=d.sleepSessions&&d.sleepSessions[idx];
+  if(!s) return;
+  s.end=val;
+  if(!s.endDate) s.endDate=s.date;
+  d.schlafStunden=computeTotalSleepHours(d.sleepSessions);
+  save();
+  updateSleepTotalSummary();
+  renderTimeline();
+  applySleepCardPosition();
+}
+function openFullSleepEditor(idx){
+  sleepQuickEditIdx=null;
+  editSleepSession(idx);
+}
 function renderSleep(){
   sleepEditorState=null;
+  sleepQuickEditIdx=null;
   renderSleepEditor();
   renderSleepSessionsList();
+  updateSleepQuickTimes();
+  applySleepCardPosition();
+}
+function updateSleepQuickTimes(){
+  const t=nowTime();
+  const w=document.getElementById('quickWakeTime');
+  const b=document.getElementById('quickBedTime');
+  if(w) w.textContent=t;
+  if(b) b.textContent=t;
+}
+function findOpenSleepSession(){
+  const todayK=todayKey();
+  const yestK=addDaysToDateKey(todayK,-1);
+  for(const dk of [todayK,yestK]){
+    const dd=db.dayData&&db.dayData[dk];
+    if(!dd||!dd.sleepSessions) continue;
+    const idx=dd.sleepSessions.findIndex(s=>!s.end);
+    if(idx!==-1) return {dateKey:dk,idx};
+  }
+  return null;
+}
+function quickWakeUp(){
+  const now=nowTime();
+  const todayK=todayKey();
+  const open=findOpenSleepSession();
+  if(open){
+    const s=db.dayData[open.dateKey].sleepSessions[open.idx];
+    s.endDate=todayK;
+    s.end=now;
+  } else {
+    if(!db.dayData[todayK]) db.dayData[todayK]={stuhlgang:[]};
+    const d=db.dayData[todayK];
+    if(!d.sleepSessions) d.sleepSessions=[];
+    // Kein offener Eintrag vorhanden -> Start grob auf 8 Std. vor jetzt geschätzt (über "Weitere Optionen" korrigierbar)
+    let startH=timeToHour(now)-8, startDate=todayK;
+    if(startH<0){ startH+=24; startDate=addDaysToDateKey(todayK,-1); }
+    const startTime=`${String(Math.floor(startH)).padStart(2,'0')}:${String(Math.round((startH%1)*60)).padStart(2,'0')}`;
+    d.sleepSessions.push({type:'Hauptschlaf',date:startDate,start:startTime,endDate:todayK,end:now});
+  }
+  [todayK,addDaysToDateKey(todayK,-1)].forEach(dk=>{
+    if(db.dayData[dk]) db.dayData[dk].schlafStunden=computeTotalSleepHours(db.dayData[dk].sleepSessions||[]);
+  });
+  save();
+  renderSleep();
+  renderTimeline();
+  toast('🌅 Aufgestanden um '+now+' erfasst');
+}
+function quickBedtime(){
+  const now=nowTime();
+  const d=getTodayData();
+  if(!d.sleepSessions) d.sleepSessions=[];
+  if(d.sleepSessions.some(s=>!s.end)){ toast('❗ Es läuft schon eine offene Schlafphase'); return; }
+  d.sleepSessions.push({type:'Hauptschlaf',date:viewKey(),start:now,endDate:null,end:null});
+  save();
+  renderSleep();
+  renderTimeline();
+  toast('🌙 Gute Nacht — '+now+' erfasst');
+}
+function isSleepEntryComplete(){
+  const todayK=todayKey();
+  const yestK=addDaysToDateKey(todayK,-1);
+  const hasWakeToday=[todayK,yestK].some(dk=>{
+    const dd=db.dayData&&db.dayData[dk];
+    return dd&&(dd.sleepSessions||[]).some(s=>s.end&&(s.endDate||s.date)===todayK);
+  });
+  const qualitySet=(db.dayData[todayK]||{}).schlafQualitaet!=null;
+  return hasWakeToday&&qualitySet;
+}
+function applySleepCardPosition(){
+  if(viewKey()!==todayKey()){
+    relocateToggleCard('sleepCard',false); // an anderen Tagen immer oben zeigen
+    return;
+  }
+  relocateToggleCard('sleepCard',isSleepEntryComplete());
 }
 
 function applyScaleBtns(btns,val){
@@ -1939,6 +2112,7 @@ function setRangeScale(input,field){
   saveDayField(field,val);
   updateRangeDisplay(input,field,val);
   updateStatsRow();
+  if(field==='schlafQualitaet') applySleepCardPosition();
 }
 const BEZIEHUNG_LABELS={1:'Sehr schlecht',2:'Schlecht',3:'Schlecht',4:'Eher schlecht',5:'Neutral',6:'Neutral',7:'Eher gut',8:'Gut',9:'Sehr gut',10:'Ausgezeichnet'};
 function beziehungColor(val){
@@ -2215,6 +2389,38 @@ function suppRowPointerUp(){
   suppDragEl=null;
 }
 document.addEventListener('pointermove',suppRowPointerMove);
+
+// ── Klick ausserhalb eines offenen Editors schliesst ihn (wie "Abbrechen") ──
+function isOutsideEditorClick(e,editorEl,safeSelectors){
+  if(!editorEl) return false;
+  if(editorEl.contains(e.target)) return false;
+  for(const sel of safeSelectors){ if(e.target.closest(sel)) return false; }
+  return true;
+}
+document.addEventListener('click',function(e){
+  if(typeof sleepEditorState!=='undefined'&&sleepEditorState){
+    if(isOutsideEditorClick(e,document.getElementById('sleepEditor'),['[onclick^="addSleepSession"]','[onclick^="editSleepSession"]'])){
+      cancelSleepEditor();
+    }
+  }
+  if(typeof sleepQuickEditIdx!=='undefined'&&sleepQuickEditIdx!=null){
+    if(!e.target.closest('.sleep-quick-edit-row')){
+      sleepQuickEditIdx=null;
+      renderSleepSessionsList();
+    }
+  }
+  if(typeof aktEditorState!=='undefined'&&aktEditorState){
+    if(isOutsideEditorClick(e,document.getElementById('aktEditor'),['#aktivitaetChipRow .akt-tile','[onclick^="editAktivitaet"]'])){
+      cancelAktEditor();
+    }
+  }
+  const suppOpen=(typeof suppEditingIdx!=='undefined'&&suppEditingIdx!=null)||(typeof suppPendingSelection!=='undefined'&&suppPendingSelection.length);
+  if(suppOpen){
+    if(isOutsideEditorClick(e,document.getElementById('suppEditor'),['#supplementChipRow .akt-tile','[onclick^="editSupplement"]'])){
+      if(suppEditingIdx!=null) cancelSuppEditor(); else cancelSuppPicking();
+    }
+  }
+});
 document.addEventListener('pointerup',suppRowPointerUp);
 document.addEventListener('pointercancel',suppRowPointerUp);
 function addSupplementType(){
