@@ -133,11 +133,15 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .scale-btn.stress-3.sel{background:#fff3cd;border-color:#ffc107;color:#856404}
 .scale-btn.stress-4.sel{background:#ffe0b2;border-color:#ff9800;color:#7c3802}
 .scale-btn.stress-5.sel{background:#f8d7da;border-color:#dc3545;color:#721c24}
-.scale-btn.stool-1.sel{background:#d1ecf1;border-color:#17a2b8;color:#0c5460}
-.scale-btn.stool-2.sel{background:#cce5ff;border-color:#004085;color:#004085}
-.scale-btn.stool-3.sel{background:#d4edda;border-color:#28a745;color:#155724}
-.scale-btn.stool-4.sel{background:#fff3cd;border-color:#e0a800;color:#856404}
-.scale-btn.stool-5.sel{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.scale-btn.stool-1.sel{background:#f8d7da;border-color:#dc3545;color:#721c24}
+.scale-btn.stool-2.sel{background:#ffe0b2;border-color:#e0a95c;color:#7c3802}
+.scale-btn.stool-3.sel{background:#fff3cd;border-color:#e0a800;color:#856404}
+.scale-btn.stool-4.sel{background:#d4edda;border-color:#28a745;color:#155724}
+.scale-btn.stool-5.sel{background:#d0f0c0;border-color:#5cb85c;color:#2d5e1a}
+.scale-btn.stool-6.sel{background:#cce5ff;border-color:#004085;color:#004085}
+.scale-btn.stool-7.sel{background:#d1ecf1;border-color:#17a2b8;color:#0c5460}
+.bristol-row{flex-wrap:wrap}
+.bristol-row .scale-btn{flex:1 1 calc(25% - 5px);min-width:60px}
 .scale-btn.sleep-1.sel{background:#f8d7da;border-color:#dc3545;color:#721c24}
 .scale-btn.sleep-2.sel{background:#ffe0b2;border-color:#ff9800;color:#7c3802}
 .scale-btn.sleep-3.sel{background:#fff3cd;border-color:#ffc107;color:#856404}
@@ -184,15 +188,17 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 
 .schlaf-row{display:flex;gap:8px;align-items:center;margin-bottom:9px}
 .sleep-quick-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.sleep-quick-btn{position:relative;overflow:hidden;border:none;border-radius:18px;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#fff;transition:transform .12s;box-shadow:0 6px 16px rgba(20,30,22,.14)}
+.sleep-quick-btn{position:relative;overflow:hidden;border:none;border-radius:18px;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#fff;transition:transform .12s}
+.sleep-quick-wake{box-shadow:0 8px 18px rgba(242,108,122,.32)}
+.sleep-quick-bed{box-shadow:0 8px 18px rgba(24,28,66,.32)}
 .sleep-quick-btn:active{transform:scale(.96)}
-.sleep-quick-wake{background:linear-gradient(160deg,#8B939E 0%,#6E7680 100%)}
-.sleep-quick-bed{background:linear-gradient(160deg,#5B6169 0%,#40454C 100%)}
+.sleep-quick-btn.suggested{box-shadow:0 0 0 2.5px #fff,0 0 0 5px rgba(52,181,117,.55),0 8px 18px rgba(20,30,22,.22);transform:scale(1.015)}
+.sleep-quick-wake{background:linear-gradient(155deg,#FFB86B 0%,#FF8A65 60%,#F26C7A 100%)}
+.sleep-quick-bed{background:linear-gradient(155deg,#4A5BA6 0%,#2C3570 60%,#181C42 100%)}
 .sleep-quick-glow{position:absolute;top:-30%;right:-20%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%);pointer-events:none}
 .sleep-quick-icon{font-size:24px;position:relative;z-index:1}
 .sleep-quick-label{font-size:11.5px;font-weight:700;opacity:.95;position:relative;z-index:1}
 .sleep-quick-time{font-family:var(--font-serif);font-size:19px;font-weight:800;position:relative;z-index:1;letter-spacing:-.2px}
-.sleep-quick-cta{font-size:9.5px;font-weight:700;opacity:.8;margin-top:2px;position:relative;z-index:1;letter-spacing:.2px}
 .sleep-quick-edit-row{align-items:flex-start;background:var(--purple-light)}
 .sleep-quick-edit-fields{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
 .sleep-quick-edit-times{display:flex;align-items:center;gap:8px}
@@ -658,14 +664,12 @@ textarea.form-input{min-height:68px;resize:none}
         <span class="sleep-quick-icon">🌅</span>
         <span class="sleep-quick-label">Aufgestanden</span>
         <span class="sleep-quick-time" id="quickWakeTime">–:–</span>
-        <span class="sleep-quick-cta">Jetzt eintragen ›</span>
       </button>
       <button type="button" class="sleep-quick-btn sleep-quick-bed" onclick="quickBedtime()">
         <span class="sleep-quick-glow"></span>
         <span class="sleep-quick-icon">🌙</span>
         <span class="sleep-quick-label">Gehe schlafen</span>
         <span class="sleep-quick-time" id="quickBedTime">–:–</span>
-        <span class="sleep-quick-cta">Jetzt eintragen ›</span>
       </button>
     </div>
     <div id="sleepSessionsList"></div>
@@ -834,7 +838,7 @@ textarea.form-input{min-height:68px;resize:none}
         <input type="range" min="1" max="5" step="1" value="3" class="range-slider" id="stressRange" oninput="setRangeScale(this,'stressLevel')">
         <div class="range-value" id="stressRangeValue">–</div>
       </div>
-      <input type="text" class="form-input" id="stressFactorInput" placeholder="Auslöser? z.B. Arbeit, Beziehung, Schlafmangel…" style="margin-top:9px" oninput="onStressFactorInput(this)" onblur="commitStressFactorMemory(this)">
+      <input type="text" class="form-input" id="stressFactorInput" placeholder="Auslöser? z.B. Arbeit, Beziehung, Schlafmangel…" style="margin-top:9px" oninput="onStressFactorInput(this)" onblur="commitStressFactorMemory(this)" onfocus="showStressFactorSuggestions(this.value)">
       <div class="food-suggestions" id="stressFactorSuggestions"></div>
     </div>
     <div class="check-block">
@@ -1248,14 +1252,16 @@ textarea.form-input{min-height:68px;resize:none}
       <input type="time" class="form-input" id="stoolTime">
     </div>
     <div class="form-group">
-      <label class="form-label">Konsistenz</label>
-      <div class="scale-row">
-        <button class="scale-btn stool-1" data-v="1" onclick="setStoolScale(this)">💧<small>Sehr weich</small></button>
-        <button class="scale-btn stool-2" data-v="2" onclick="setStoolScale(this)">🔵<small>Weich</small></button>
-        <button class="scale-btn stool-3 sel" data-v="3" onclick="setStoolScale(this)">✅<small>Normal</small></button>
-        <button class="scale-btn stool-4" data-v="4" onclick="setStoolScale(this)">🟡<small>Fest</small></button>
-        <button class="scale-btn stool-5" data-v="5" onclick="setStoolScale(this)">🔴<small>Sehr hart</small></button>
+      <label class="form-label" id="stoolScaleLabel">Konsistenz</label>
+      <div class="range-row" style="margin-top:4px">
+        <input type="range" min="1" max="7" step="1" value="4" class="range-slider" id="stoolRange" oninput="setStoolScale(this)">
+        <div class="range-value" id="stoolRangeValue">–</div>
       </div>
+      <div style="display:flex;justify-content:space-between;font-size:9.5px;color:var(--gray-dark);margin-top:3px;padding:0 2px">
+        <span id="stoolScaleLeftHint">Weich</span>
+        <span id="stoolScaleRightHint">Hart</span>
+      </div>
+      <div style="font-size:10.5px;color:var(--gray-dark);margin-top:6px" id="bristolDescription"></div>
     </div>
     <div class="form-group">
       <label class="form-label">🎈 Blähbauch</label>
@@ -1320,6 +1326,9 @@ textarea.form-input{min-height:68px;resize:none}
 // ── DB ──────────────────────────────────────────────────────────────────
 let db = JSON.parse(localStorage.getItem('ernaehrung_db3') || '{"entries":[],"water":{},"notizen":{},"dayData":{},"profile":{}}');
 if(!db.dayData) db.dayData={};
+if(!db.stressFactorMemory||!db.stressFactorMemory.length){
+  db.stressFactorMemory=['Jetlag','Zeitzonenwechsel','Kabinendruck','Schichtdienst','Zeitdruck','Arbeit','Beziehung','Schlafmangel','Finanzen','Reisen','Lärm','Koffein'];
+}
 function save(){ localStorage.setItem('ernaehrung_db3', JSON.stringify(db)); }
 
 // ── SCHWEIZER LOKALZEIT — alle Uhrzeiten/Daten in der App laufen auf
@@ -1370,7 +1379,7 @@ function toast(msg,dur=2000){
 }
 
 // ── STATE ────────────────────────────────────────────────────────────────
-let selType='Frühstück',selStoolSc=3,selBlaehbauch=1,selBlaehungen=1;
+let selType='Frühstück',selStoolSc=4,selBlaehbauch=1,selBlaehungen=1;
 let editingEntryId=null;
 let currentPhotoData=null, currentAiAnalysis=null;
 function guessTypeFromTime(){
@@ -1502,11 +1511,8 @@ async function renderTimeline(){
 
   let trackHtml='';
   let subtrackHtml='';
-  (d.sleepSessions||[]).forEach(s=>{
-    const startH=timeToHour(s.start), endHraw=timeToHour(s.end);
-    if(startH==null||endHraw==null) return;
-    const endH=endHraw<=startH?24:endHraw; // über Mitternacht: bis Tagesende zeigen
-    subtrackHtml+=`<div class="timeline-subtrack-fill" style="left:${tlPct(startH)}%;width:${(tlPct(endH)-tlPct(startH)).toFixed(2)}%" title="${s.type}: ${s.start}–${s.end}"></div>`;
+  getSleepSegmentsForDay(dateKey).forEach(seg=>{
+    subtrackHtml+=`<div class="timeline-subtrack-fill" style="left:${tlPct(seg.startH)}%;width:${(tlPct(seg.endH)-tlPct(seg.startH)).toFixed(2)}%" title="${seg.s.type}: ${seg.s.start}–${seg.s.end||'…'}"></div>`;
   });
   const subtrack=document.getElementById('timelineSubtrack');
   if(subtrack) subtrack.innerHTML=subtrackHtml;
@@ -2001,6 +2007,42 @@ function updateSleepQuickTimes(){
   const b=document.getElementById('quickBedTime');
   if(w) w.textContent=t;
   if(b) b.textContent=t;
+  updateSleepSuggestion();
+}
+function updateSleepSuggestion(){
+  const wakeBtn=document.querySelector('.sleep-quick-wake');
+  const bedBtn=document.querySelector('.sleep-quick-bed');
+  if(!wakeBtn||!bedBtn) return;
+  wakeBtn.classList.remove('suggested');
+  bedBtn.classList.remove('suggested');
+  if(findOpenSleepSession()){
+    wakeBtn.classList.add('suggested'); // Nacht läuft bereits -> Aufstehen ist der nächste sinnvolle Schritt
+    return;
+  }
+  const h=swissNowParts().hour;
+  if(h>=20||h<4) bedBtn.classList.add('suggested');
+  else if(h>=4&&h<11) wakeBtn.classList.add('suggested');
+}
+function getSleepSegmentsForDay(dateKey){
+  const segments=[];
+  const todayArr=(db.dayData[dateKey]&&db.dayData[dateKey].sleepSessions)||[];
+  todayArr.forEach(s=>{
+    if(s.date!==dateKey) return;
+    const startH=timeToHour(s.start);
+    if(startH==null) return;
+    const endHraw=timeToHour(s.end);
+    const endH=(endHraw==null||endHraw<=startH)?24:endHraw; // offen oder über Mitternacht -> bis Tagesende
+    segments.push({startH,endH,s});
+  });
+  const prevKey=addDaysToDateKey(dateKey,-1);
+  const prevArr=(db.dayData[prevKey]&&db.dayData[prevKey].sleepSessions)||[];
+  prevArr.forEach(s=>{
+    if(!s.end||s.endDate!==dateKey) return; // nur relevant, wenn sie genau HEUTE endet
+    const endH=timeToHour(s.end);
+    if(endH==null) return;
+    segments.push({startH:0,endH,s}); // Rest der Nacht ab Mitternacht bis zum Aufwachen
+  });
+  return segments;
 }
 function findOpenSleepSession(){
   const todayK=todayKey();
@@ -2666,9 +2708,19 @@ function toggleKaffeeMilch(){
 }
 
 // ── STUHLGANG ─────────────────────────────────────────────────────────
-const stoolLabels={1:'💧 Sehr weich',2:'🔵 Weich',3:'✅ Normal',4:'🟡 Fest',5:'🔴 Sehr hart'};
-const stoolBg={1:'#d1ecf1',2:'#cce5ff',3:'#d4edda',4:'#fff3cd',5:'#f8d7da'};
-const stoolFg={1:'#0c5460',2:'#004085',3:'#155724',4:'#856404',5:'#721c24'};
+// ── Bristol-Stuhlformen-Skala gilt erst AB STICHTAG — Einträge davor behalten
+//    ihre ursprüngliche (alte) Bedeutung, nichts wird rückwirkend umgedeutet ──
+const BRISTOL_CUTOVER='2026-07-28';
+function isBristolActive(dateKey){ return (dateKey||todayKey())>=BRISTOL_CUTOVER; }
+const stoolLabelsBristol={1:'🔴 Harte Klumpen',2:'🟠 Klumpige Wurst',3:'🟡 Rissige Wurst',4:'✅ Glatte Wurst (ideal)',5:'🟢 Weiche Klumpen',6:'🔵 Breiig',7:'💧 Wässrig'};
+const stoolBgBristol={1:'#f8d7da',2:'#ffe0b2',3:'#fff3cd',4:'#d4edda',5:'#d0f0c0',6:'#cce5ff',7:'#d1ecf1'};
+const stoolFgBristol={1:'#721c24',2:'#7c3802',3:'#856404',4:'#155724',5:'#2d5e1a',6:'#004085',7:'#0c5460'};
+const stoolLabelsLegacy={1:'💧 Sehr weich',2:'🔵 Weich',3:'✅ Normal',4:'🟡 Fest',5:'🔴 Sehr hart'};
+const stoolBgLegacy={1:'#d1ecf1',2:'#cce5ff',3:'#d4edda',4:'#fff3cd',5:'#f8d7da'};
+const stoolFgLegacy={1:'#0c5460',2:'#004085',3:'#155724',4:'#856404',5:'#721c24'};
+function stoolLabelFor(dateKey,skala){ return (isBristolActive(dateKey)?stoolLabelsBristol:stoolLabelsLegacy)[skala]||''; }
+function stoolBgFor(dateKey,skala){ return (isBristolActive(dateKey)?stoolBgBristol:stoolBgLegacy)[skala]||'#eee'; }
+function stoolFgFor(dateKey,skala){ return (isBristolActive(dateKey)?stoolFgBristol:stoolFgLegacy)[skala]||'#333'; }
 const sevLabels={1:'Keine',2:'Leicht',3:'Mittel',4:'Stark',5:'Sehr stark'};
 const sevBg={1:'#d4edda',2:'#d4edda',3:'#fff3cd',4:'#ffe0b2',5:'#f8d7da'};
 const sevFg={1:'#155724',2:'#155724',3:'#856404',4:'#7c3802',5:'#721c24'};
@@ -2683,25 +2735,75 @@ function renderStuhlgang(){
     return `
     <div class="stool-item" style="flex-wrap:wrap">
       <span class="stool-time">${s.time}</span>
-      <span class="stool-badge" style="background:${stoolBg[s.skala]};color:${stoolFg[s.skala]}">${stoolLabels[s.skala]}</span>
+      <span class="stool-badge" style="background:${stoolBgFor(viewKey(),s.skala)};color:${stoolFgFor(viewKey(),s.skala)}">${stoolLabelFor(viewKey(),s.skala)}</span>
       ${extras.join('')}
       <button class="stool-del" onclick="deleteStuhlgang(${i})">✕</button>
     </div>`;
   }).join('');
 }
+const stoolLegacyIcons={1:'💧',2:'🔵',3:'✅',4:'🟡',5:'🔴'};
+const stoolBristolIcons={1:'🔴',2:'🟠',3:'🟡',4:'✅',5:'🟢',6:'🔵',7:'💧'};
+const stoolBristolShort={1:'Harte Klumpen',2:'Klumpige Wurst',3:'Rissige Wurst',4:'Glatte Wurst',5:'Weiche Klumpen',6:'Breiig',7:'Wässrig'};
+function stoolSliderColor(bristol,val){
+  const ideal=bristol?4:3;
+  const dist=Math.abs(val-ideal);
+  const hue=Math.max(130-dist*38,0); // 130=grün nah am Ideal, sinkt Richtung Rot mit Abstand
+  return `hsl(${hue},62%,44%)`;
+}
+function renderStoolScaleRow(){
+  const bristol=isBristolActive(viewKey());
+  const label=document.getElementById('stoolScaleLabel');
+  const range=document.getElementById('stoolRange');
+  if(!range) return;
+  range.max=bristol?7:5;
+  selStoolSc=bristol?4:3;
+  range.value=bristol?(8-selStoolSc):selStoolSc; // Bristol: Regler links=weich/rechts=hart, also invertiert zur Typ-Nummer
+  if(label) label.textContent=bristol?'Konsistenz (Bristol-Stuhlformen-Skala)':'Konsistenz';
+  updateStoolRangeDisplay();
+}
+function updateStoolRangeDisplay(){
+  const bristol=isBristolActive(viewKey());
+  const val=selStoolSc;
+  const color=stoolSliderColor(bristol,val);
+  const icon=(bristol?stoolBristolIcons:stoolLegacyIcons)[val]||'';
+  const label=bristol?stoolBristolShort[val]:stoolLabelsLegacy[val].replace(/^\S+\s/,'');
+  const range=document.getElementById('stoolRange');
+  const max=bristol?7:5;
+  const raw=range?parseInt(range.value):val; // tatsächliche Reglerposition (bei Bristol invertiert zum Typ-Wert)
+  const pct=((raw-1)/(max-1))*100;
+  if(range){ range.style.setProperty('--range-color',color); range.style.background=`linear-gradient(to right, ${color} ${pct}%, #e2e4e8 ${pct}%)`; }
+  const valueEl=document.getElementById('stoolRangeValue');
+  if(valueEl){
+    valueEl.innerHTML=`<span class="range-value-num">${icon}</span><span class="range-value-label">${label}</span>`;
+    valueEl.style.background=color+'22';
+    valueEl.style.color=color;
+    valueEl.classList.remove('pop'); void valueEl.offsetWidth; valueEl.classList.add('pop');
+  }
+  const desc=document.getElementById('bristolDescription');
+  if(desc) desc.textContent=bristol?(BRISTOL_DESCRIPTIONS[val]||''):'';
+}
 function openStoolModal(){
-  setTimeNow(); selStoolSc=3; selBlaehbauch=1; selBlaehungen=1;
-  document.querySelectorAll('.scale-btn[onclick*="setStoolScale"]').forEach(b=>{b.classList.remove('sel');if(parseInt(b.dataset.v)===3)b.classList.add('sel');});
+  setTimeNow(); selBlaehbauch=1; selBlaehungen=1;
+  renderStoolScaleRow();
   document.querySelectorAll('.scale-btn[onclick*="setSevScale"]').forEach(b=>{b.classList.remove('sel');if(parseInt(b.dataset.v)===1)b.classList.add('sel');});
   document.getElementById('stoolModalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
 function closeStoolModal(){document.getElementById('stoolModalOverlay').classList.remove('open');document.body.style.overflow='';}
 function closeStoolOutside(e){if(e.target===document.getElementById('stoolModalOverlay'))closeStoolModal();}
-function setStoolScale(btn){
-  selStoolSc=parseInt(btn.dataset.v);
-  document.querySelectorAll('.scale-btn[onclick*="setStoolScale"]').forEach(b=>b.classList.remove('sel'));
-  btn.classList.add('sel');
+const BRISTOL_DESCRIPTIONS={
+  1:'Einzelne harte Klumpen, schwer auszuscheiden (starke Verstopfung)',
+  2:'Klumpige, wurstförmige Form (leichte Verstopfung)',
+  3:'Wurstförmig mit rissiger Oberfläche (normal)',
+  4:'Wurstförmig, glatt und weich (ideal)',
+  5:'Weiche Klumpen mit klaren Rändern (leichter Durchfall)',
+  6:'Breiig, ausgefranste Ränder (Durchfall)',
+  7:'Wässrig, keine festen Bestandteile (starker Durchfall)',
+};
+function setStoolScale(range){
+  const raw=parseInt(range.value);
+  selStoolSc=isBristolActive(viewKey())?(8-raw):raw;
+  updateStoolRangeDisplay();
 }
 function setSevScale(btn,field){
   const val=parseInt(btn.dataset.v);
@@ -3375,12 +3477,14 @@ function commitStressFactorMemory(el){
 }
 function onStressFactorInput(el){
   saveDayField('stressFactors',el.value);
+  showStressFactorSuggestions(el.value);
+}
+function showStressFactorSuggestions(rawValue){
   const box=document.getElementById('stressFactorSuggestions');
   if(!box) return;
-  const lastPart=el.value.split(',').pop().trim().toLowerCase();
-  if(!lastPart){ box.innerHTML=''; return; }
+  const lastPart=(rawValue||'').split(',').pop().trim().toLowerCase();
   const memory=db.stressFactorMemory||[];
-  const matches=memory.filter(n=>n.toLowerCase().includes(lastPart)&&n.toLowerCase()!==lastPart).slice(0,6);
+  const matches=(lastPart?memory.filter(n=>n.toLowerCase().includes(lastPart)&&n.toLowerCase()!==lastPart):memory).slice(0,8);
   box.innerHTML=matches.map(n=>`<button type="button" class="food-suggestion-chip" onclick="applyStressFactorSuggestion(${JSON.stringify(n).replace(/"/g,'&quot;')})">${n}</button>`).join('');
 }
 function applyStressFactorSuggestion(name){
@@ -4756,7 +4860,7 @@ function exportData(){
       if(dd.aktivitaet.text) text+=`🏃 Weitere: ${dd.aktivitaet.text}\n`;
     }
     if((dd.stuhlgang||[]).length) dd.stuhlgang.forEach(s=>{
-      let line=`🚽 ${s.time} – ${stoolLabels[s.skala]}`;
+      let line=`🚽 ${s.time} – ${stoolLabelFor(date,s.skala)}`;
       if(s.blaehbauch&&s.blaehbauch>1) line+=` · Blähbauch: ${sevLabels[s.blaehbauch]}`;
       if(s.blaehungen&&s.blaehungen>1) line+=` · Blähungen: ${sevLabels[s.blaehungen]}`;
       text+=line+'\n';
