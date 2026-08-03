@@ -187,18 +187,6 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .stool-add-btn:active{transform:scale(.98)}
 
 .schlaf-row{display:flex;gap:8px;align-items:center;margin-bottom:9px}
-.sleep-quick-row{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:12px}
-.sleep-quick-btn{position:relative;overflow:hidden;border:none;border-radius:18px;padding:16px 10px 13px;display:flex;flex-direction:column;align-items:center;gap:3px;cursor:pointer;color:#fff;transition:transform .12s}
-.sleep-quick-wake{box-shadow:0 8px 18px rgba(242,108,122,.32)}
-.sleep-quick-bed{box-shadow:0 8px 18px rgba(24,28,66,.32)}
-.sleep-quick-btn:active{transform:scale(.96)}
-.sleep-quick-btn.suggested{box-shadow:0 0 0 2.5px #fff,0 0 0 5px rgba(52,181,117,.55),0 8px 18px rgba(20,30,22,.22);transform:scale(1.015)}
-.sleep-quick-wake{background:linear-gradient(155deg,#FFB86B 0%,#FF8A65 60%,#F26C7A 100%)}
-.sleep-quick-bed{background:linear-gradient(155deg,#4A5BA6 0%,#2C3570 60%,#181C42 100%)}
-.sleep-quick-glow{position:absolute;top:-30%;right:-20%;width:80px;height:80px;border-radius:50%;background:radial-gradient(circle,rgba(255,255,255,.28),transparent 70%);pointer-events:none}
-.sleep-quick-icon{font-size:24px;position:relative;z-index:1}
-.sleep-quick-label{font-size:11.5px;font-weight:700;opacity:.95;position:relative;z-index:1}
-.sleep-quick-time{font-family:var(--font-serif);font-size:19px;font-weight:800;position:relative;z-index:1;letter-spacing:-.2px}
 .sleep-quick-edit-row{align-items:flex-start;background:var(--purple-light)}
 .sleep-quick-edit-fields{flex:1;display:flex;flex-direction:column;gap:7px;min-width:0}
 .sleep-quick-edit-times{display:flex;align-items:center;gap:8px}
@@ -658,22 +646,8 @@ textarea.form-input{min-height:68px;resize:none}
   <!-- SCHLAF (unter Tagesverlauf, rutscht nach vollständigem Eintrag unter die Tagesnotiz) -->
   <div class="card" id="sleepCard">
     <div class="card-title">😴 Schlaf</div>
-    <div class="sleep-quick-row">
-      <button type="button" class="sleep-quick-btn sleep-quick-wake" onclick="quickWakeUp()">
-        <span class="sleep-quick-glow"></span>
-        <span class="sleep-quick-icon">🌅</span>
-        <span class="sleep-quick-label">Aufgestanden</span>
-        <span class="sleep-quick-time" id="quickWakeTime">–:–</span>
-      </button>
-      <button type="button" class="sleep-quick-btn sleep-quick-bed" onclick="quickBedtime()">
-        <span class="sleep-quick-glow"></span>
-        <span class="sleep-quick-icon">🌙</span>
-        <span class="sleep-quick-label">Gehe schlafen</span>
-        <span class="sleep-quick-time" id="quickBedTime">–:–</span>
-      </button>
-    </div>
     <div id="sleepSessionsList"></div>
-    <button type="button" class="btn-secondary" style="background:var(--purple-light);color:var(--purple);margin-top:8px" onclick="addSleepSession()">➕ Schlafphase manuell hinzufügen</button>
+    <button type="button" class="btn-secondary" style="background:var(--purple-light);color:var(--purple);margin-top:8px" onclick="addSleepSession()">➕ Schlafphase hinzufügen</button>
     <div class="akt-editor" id="sleepEditor" style="display:none"></div>
     <div style="font-size:11.5px;color:var(--gray-dark);margin-top:9px;font-weight:600" id="sleepTotalSummary"></div>
     <div class="sub-label" style="margin-top:12px">Schlafqualität (gesamt heute)</div>
@@ -1148,7 +1122,7 @@ textarea.form-input{min-height:68px;resize:none}
         <code>schlaf:7.5:4</code> (Stunden:Qualität 1-5, Qualität optional)<br>
         <code>schritte:9200</code> · <code>kalorien:2100</code> (aktiv verbrannt)<br>
         <code>gewicht:78.4</code> (kg) · <code>ruhepuls:54</code> (bpm) · <code>training:45</code> (Min.)<br>
-        <code>wach:07:15</code> · <code>bett:23:00</code> (legt/aktualisiert automatisch eine "Hauptschlaf"-Schlafphase — aus „Schlafanalyse abrufen" in Kurzbefehle: Beginn/Ende der letzten Nacht als HH:MM formatieren. Naps trägst du manuell im Schlaf-Bereich ein.)<br>
+        <code>wach:07:15</code> · <code>bett:23:00</code> (legt/aktualisiert automatisch eine Schlafphase — aus „Schlafanalyse abrufen" in Kurzbefehle: Beginn/Ende der letzten Nacht als HH:MM formatieren. Weitere Phasen trägst du manuell im Schlaf-Bereich ein.)<br>
         <code>hrv:52</code> (Herzfrequenzvariabilität in ms — <b>Annäherung an Stress</b>, kein echter Garmin-Stress-Wert, siehe Hinweis unten)
       </div>
     </div>
@@ -1229,7 +1203,8 @@ textarea.form-input{min-height:68px;resize:none}
       </div>
       <div class="form-group">
         <label class="form-label">💧 Getränke &amp; Menge</label>
-        <input type="text" class="form-input" id="inputDrink" placeholder="z.B. 1 Tasse Kaffee (150 ml)">
+        <input type="text" class="form-input" id="inputDrink" placeholder="z.B. 1 Tasse Kaffee (150 ml)" oninput="showDrinkSuggestions(this.value)" onfocus="showDrinkSuggestions(this.value)">
+        <div class="food-suggestions" id="drinkSuggestions"></div>
       </div>
       <div class="form-group">
         <label class="form-label">💬 Anmerkungen</label>
@@ -1715,13 +1690,13 @@ function handleURLHealth(){
   if(autoSleepStart||autoSleepEnd){
     const d=getTodayData();
     if(!d.sleepSessions) d.sleepSessions=[];
-    let session=d.sleepSessions.find(s=>s.type==='Hauptschlaf');
-    if(!session){ session={type:'Hauptschlaf',start:'23:00',end:'07:00'}; d.sleepSessions.push(session); }
+    let session=d.sleepSessions.find(s=>s.type==='Schlaf');
+    if(!session){ session={type:'Schlaf',start:'23:00',end:'07:00'}; d.sleepSessions.push(session); }
     if(autoSleepStart) session.start=autoSleepStart;
     if(autoSleepEnd) session.end=autoSleepEnd;
     d.schlafStunden=computeTotalSleepHours(d.sleepSessions);
     save();
-    applied.push(`😴 Hauptschlaf ${session.start}–${session.end}`);
+    applied.push(`😴 Schlaf ${session.start}–${session.end}`);
   }
   if(applied.length){
     renderTagesCheck();
@@ -1783,7 +1758,7 @@ document.addEventListener('pointermove',moveWaterDrag);
 document.addEventListener('pointerup',endWaterDrag);
 document.addEventListener('pointercancel',endWaterDrag);
 
-// ── SCHLAFPHASEN — beliebig viele pro Tag (Hauptschlaf, Nap) ──
+// ── SCHLAFPHASEN — beliebig viele pro Tag ──
 let sleepEditorState=null;
 function formatShortDate(dateKeyStr){
   const [y,m,dd]=dateKeyStr.split('-').map(Number);
@@ -1819,8 +1794,9 @@ function smartEndDate(startDate,start,end){
   return startDate;
 }
 function addSleepSession(){
-  const date=viewKey();
-  sleepEditorState={idx:null, type:'Hauptschlaf', date, start:'23:00', endDate:addDaysToDateKey(date,1), end:'07:00'};
+  const endDate=viewKey();
+  const date=addDaysToDateKey(endDate,-1); // meist ist "gestern Abend eingeschlafen, heute aufgewacht" der häufigste Fall
+  sleepEditorState={idx:null, type:'Schlaf', date, start:'23:00', endDate, end:'07:30'};
   renderSleepEditor();
   const editor=document.getElementById('sleepEditor');
   if(editor) editor.scrollIntoView({behavior:'smooth',block:'nearest'});
@@ -1834,7 +1810,6 @@ function editSleepSession(idx){
   sleepEditorState={idx, type:it.type, date, start:it.start, endDate, end:it.end};
   renderSleepEditor();
 }
-function setSleepEditorType(type){ if(sleepEditorState){ sleepEditorState.type=type; renderSleepEditor(); } }
 function setSleepEditorDate(val){
   if(!sleepEditorState) return;
   sleepEditorState.date=val;
@@ -1878,12 +1853,7 @@ function renderSleepEditor(){
   if(!box) return;
   if(!sleepEditorState){ box.style.display='none'; box.innerHTML=''; return; }
   box.style.display='block';
-  const types=['Hauptschlaf','Nap'];
-  const typeBtns=types.map(t=>`<button type="button" class="chip${sleepEditorState.type===t?' selected':''}" onclick="setSleepEditorType('${t}')">${t}</button>`).join('');
   box.innerHTML=`
-    <div class="sub-label">Art</div>
-    <div class="chip-row">${typeBtns}</div>
-
     <div class="sleep-editor-card">
       <div class="sleep-editor-cols">
         <div class="sleep-editor-col">
@@ -1920,7 +1890,7 @@ function renderSleepSessionsList(){
   if(container){
     container.innerHTML=sessions.map((s,idx)=>{
       const dur=sessionDurationHoursV2(s);
-      const icon=s.type==='Nap'?'💤':'😴';
+      const icon='😴';
       const dateLabel=(s.date&&s.date!==viewKey())?formatShortDate(s.date)+' · ':'';
       const crossesDay=s.endDate&&s.endDate!==s.date;
       if(sleepQuickEditIdx===idx){
@@ -1998,30 +1968,7 @@ function renderSleep(){
   sleepQuickEditIdx=null;
   renderSleepEditor();
   renderSleepSessionsList();
-  updateSleepQuickTimes();
   applySleepCardPosition();
-}
-function updateSleepQuickTimes(){
-  const t=nowTime();
-  const w=document.getElementById('quickWakeTime');
-  const b=document.getElementById('quickBedTime');
-  if(w) w.textContent=t;
-  if(b) b.textContent=t;
-  updateSleepSuggestion();
-}
-function updateSleepSuggestion(){
-  const wakeBtn=document.querySelector('.sleep-quick-wake');
-  const bedBtn=document.querySelector('.sleep-quick-bed');
-  if(!wakeBtn||!bedBtn) return;
-  wakeBtn.classList.remove('suggested');
-  bedBtn.classList.remove('suggested');
-  if(findOpenSleepSession()){
-    wakeBtn.classList.add('suggested'); // Nacht läuft bereits -> Aufstehen ist der nächste sinnvolle Schritt
-    return;
-  }
-  const h=swissNowParts().hour;
-  if(h>=20||h<4) bedBtn.classList.add('suggested');
-  else if(h>=4&&h<11) wakeBtn.classList.add('suggested');
 }
 function getSleepSegmentsForDay(dateKey){
   const segments=[];
@@ -2043,54 +1990,6 @@ function getSleepSegmentsForDay(dateKey){
     segments.push({startH:0,endH,s}); // Rest der Nacht ab Mitternacht bis zum Aufwachen
   });
   return segments;
-}
-function findOpenSleepSession(){
-  const todayK=todayKey();
-  const yestK=addDaysToDateKey(todayK,-1);
-  for(const dk of [todayK,yestK]){
-    const dd=db.dayData&&db.dayData[dk];
-    if(!dd||!dd.sleepSessions) continue;
-    const idx=dd.sleepSessions.findIndex(s=>!s.end);
-    if(idx!==-1) return {dateKey:dk,idx};
-  }
-  return null;
-}
-function quickWakeUp(){
-  const now=nowTime();
-  const todayK=todayKey();
-  const open=findOpenSleepSession();
-  if(open){
-    const s=db.dayData[open.dateKey].sleepSessions[open.idx];
-    s.endDate=todayK;
-    s.end=now;
-  } else {
-    if(!db.dayData[todayK]) db.dayData[todayK]={stuhlgang:[]};
-    const d=db.dayData[todayK];
-    if(!d.sleepSessions) d.sleepSessions=[];
-    // Kein offener Eintrag vorhanden -> Start grob auf 8 Std. vor jetzt geschätzt (über "Weitere Optionen" korrigierbar)
-    let startH=timeToHour(now)-8, startDate=todayK;
-    if(startH<0){ startH+=24; startDate=addDaysToDateKey(todayK,-1); }
-    const startTime=`${String(Math.floor(startH)).padStart(2,'0')}:${String(Math.round((startH%1)*60)).padStart(2,'0')}`;
-    d.sleepSessions.push({type:'Hauptschlaf',date:startDate,start:startTime,endDate:todayK,end:now});
-  }
-  [todayK,addDaysToDateKey(todayK,-1)].forEach(dk=>{
-    if(db.dayData[dk]) db.dayData[dk].schlafStunden=computeTotalSleepHours(db.dayData[dk].sleepSessions||[]);
-  });
-  save();
-  renderSleep();
-  renderTimeline();
-  toast('🌅 Aufgestanden um '+now+' erfasst');
-}
-function quickBedtime(){
-  const now=nowTime();
-  const d=getTodayData();
-  if(!d.sleepSessions) d.sleepSessions=[];
-  if(d.sleepSessions.some(s=>!s.end)){ toast('❗ Es läuft schon eine offene Schlafphase'); return; }
-  d.sleepSessions.push({type:'Hauptschlaf',date:viewKey(),start:now,endDate:null,end:null});
-  save();
-  renderSleep();
-  renderTimeline();
-  toast('🌙 Gute Nacht — '+now+' erfasst');
 }
 function isSleepEntryComplete(){
   const todayK=todayKey();
@@ -3419,6 +3318,42 @@ function bucketFromHour(h){
   if(h>=18&&h<22) return 'Abendessen';
   return 'Snack';
 }
+function getDrinkFrequencyScores(){
+  const scores={};
+  const nowBucket=bucketFromHour(swissNowParts().hour);
+  (db.entries||[]).forEach(e=>{
+    if(!e.drink) return;
+    const h=timeToHour(e.time);
+    const sameTime=h!=null&&bucketFromHour(h)===nowBucket;
+    const name=e.drink.trim();
+    if(!name) return;
+    scores[name]=(scores[name]||0)+(sameTime?3:0.4);
+  });
+  return scores;
+}
+function showDrinkSuggestions(rawValue){
+  const box=document.getElementById('drinkSuggestions');
+  if(!box) return;
+  const val=(rawValue||'').trim().toLowerCase();
+  const scores=getDrinkFrequencyScores();
+  let names=Object.keys(scores);
+  if(val) names=names.filter(n=>n.toLowerCase().includes(val)&&n.toLowerCase()!==val);
+  names.sort((a,b)=>scores[b]-scores[a]);
+  const matches=names.slice(0,6);
+  if(!matches.length){ box.innerHTML=''; return; }
+  box.innerHTML=matches.map(n=>`<button type="button" class="food-suggestion-chip" onclick="applyDrinkSuggestion(${JSON.stringify(n).replace(/"/g,'&quot;')})">${n}</button>`).join('');
+}
+function applyDrinkSuggestion(name){
+  const el=document.getElementById('inputDrink');
+  if(!el) return;
+  el.value=name;
+  const box=document.getElementById('drinkSuggestions');
+  if(box) box.innerHTML='';
+}
+function resetDrinkSuggestions(){
+  const box=document.getElementById('drinkSuggestions');
+  if(box) box.innerHTML='';
+}
 function getFoodFrequencyScores(){
   const scores={};
   const nowBucket=bucketFromHour(swissNowParts().hour);
@@ -3994,7 +3929,8 @@ function openModal(){
   editingEntryId=null;
   resetPhotoUI();
   resetFoodTableUI();
-  resetFoodSuggestions();
+  showFoodSuggestions('');
+  showDrinkSuggestions('');
   setTimeNow(); selType='Frühstück';
   document.querySelectorAll('.chip').forEach(c=>c.classList.remove('selected'));
   ['inputFood','inputDrink','inputNote'].forEach(id=>document.getElementById(id).value='');
@@ -4046,7 +3982,7 @@ function editEntry(id){
   document.getElementById('modalOverlay').classList.add('open');
   document.body.style.overflow='hidden';
 }
-function closeModal(){resetFoodSuggestions();document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
+function closeModal(){resetFoodSuggestions();resetDrinkSuggestions();document.getElementById('modalOverlay').classList.remove('open');document.body.style.overflow='';}
 function closeModalOutside(e){if(e.target===document.getElementById('modalOverlay'))closeModal();}
 function selectType(btn){document.querySelectorAll('.type-btn').forEach(b=>b.classList.remove('selected'));btn.classList.add('selected');selType=btn.dataset.type;}
 
