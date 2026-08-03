@@ -104,6 +104,20 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .nutrient-gauge{height:9px;border-radius:5px;background:var(--gray);overflow:hidden;position:relative}
 .nutrient-gauge-fill{height:100%;border-radius:5px;transition:width .4s ease}
 .nutrient-streak-row{display:flex;align-items:center;gap:8px;background:var(--orange-light);border-radius:12px;padding:9px 12px;margin-top:12px;font-size:12.5px;font-weight:700;color:var(--orange)}
+.food-test-card{background:var(--gray);border-radius:16px;padding:13px 14px;margin-bottom:10px}
+.food-test-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px}
+.food-test-title{font-family:var(--font-serif);font-size:14.5px;font-weight:700}
+.food-test-del{background:none;border:none;color:var(--gray-dark);font-size:16px;cursor:pointer;padding:2px 6px}
+.food-test-meta{font-size:10.5px;color:var(--gray-dark);margin-bottom:10px}
+.food-test-compare{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.food-test-col{background:var(--surface);border-radius:12px;padding:10px}
+.food-test-col-label{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.3px;color:var(--gray-dark);margin-bottom:6px}
+.food-test-col.with .food-test-col-label{color:var(--orange)}
+.food-test-col.without .food-test-col-label{color:var(--green)}
+.food-test-stat{display:flex;justify-content:space-between;font-size:12px;margin-top:4px}
+.food-test-stat b{font-family:var(--font-serif)}
+.food-test-verdict{font-size:11.5px;color:var(--text);margin-top:10px;padding-top:10px;border-top:1px solid rgba(18,23,46,.08);line-height:1.5}
+.food-test-warning{font-size:11px;color:var(--gray-dark);font-style:italic;margin-top:8px}
 .nutrient-streak-flame{font-size:17px}
 .apikey-hint-icon{font-size:22px;flex-shrink:0}
 .apikey-hint-text{font-size:12px;line-height:1.5;color:var(--text);flex:1}
@@ -948,6 +962,20 @@ textarea.form-input{min-height:68px;resize:none}
     <div class="gutty-badges-grid" id="nutrientBadgesGrid"></div>
   </div>
 
+  <!-- ERNÄHRUNGS-TESTS — automatische Trigger-Erkennung, wissenschaftlich orientiert -->
+  <div class="card">
+    <div class="card-title purple">🔬 Ernährungs-Tests</div>
+    <div style="font-size:12px;color:var(--gray-dark);margin-bottom:12px">Verfolge, ob ein bestimmtes Lebensmittel mit deinen Symptomen zusammenhängt. Du isst wie gewohnt — die App erkennt automatisch in deinen Einträgen, an welchen Tagen es enthalten war, und vergleicht Stuhlgang, Blähungen und Energie zwischen beiden Gruppen.</div>
+    <div id="foodTestsList"></div>
+    <button type="button" class="btn-secondary" style="background:var(--purple-light);color:var(--purple)" onclick="toggleFoodTestCreator()">➕ Neuen Test starten</button>
+    <div id="foodTestCreator" style="display:none;margin-top:10px">
+      <label class="form-label">Wonach suchen? (z.B. Kokos, Sauerkraut, Honig)</label>
+      <input type="text" class="form-input" id="foodTestKeyword" placeholder="Stichwort eingeben…">
+      <div style="font-size:10.5px;color:var(--gray-dark);margin-top:6px">Die App durchsucht ab jetzt jeden Tag automatisch deine Mahlzeiten-Einträge nach diesem Wort.</div>
+      <button type="button" class="btn-primary" style="margin-top:10px" onclick="createFoodTest()">Test starten</button>
+    </div>
+  </div>
+
   <!-- GUTTY MASKOTTCHEN -->
   <div class="card gutty-card" style="margin-top:12px">
     <div class="gutty-row">
@@ -1634,7 +1662,7 @@ function showScreen(name){
   document.getElementById('nav-'+name).classList.add('active');
   document.getElementById('fab').style.display=name==='profil'?'none':'flex';
   document.getElementById('dateNav').style.visibility=name==='heute'?'visible':'hidden';
-  if(name==='woche'){ renderWeek(); renderCalendar(); renderGutty(); renderNutrientStats(); }
+  if(name==='woche'){ renderWeek(); renderCalendar(); renderGutty(); renderNutrientStats(); renderFoodTests(); }
 }
 
 // ══════════════════════════════════════════════════════════════════════════
@@ -2970,7 +2998,7 @@ Wichtig: "kalorien_geschaetzt","protein_g","kh_g","fett_g" müssen die Summe der
     },
     body:JSON.stringify({
       model:'claude-sonnet-5',
-      max_tokens:1700,
+      max_tokens:3500,
       system:systemPrompt,
       tools:[{type:'web_search_20250305',name:'web_search'}],
       messages:[{
@@ -2988,7 +3016,7 @@ Wichtig: "kalorien_geschaetzt","protein_g","kh_g","fett_g" müssen die Summe der
   }
   const data=await response.json();
   const textBlocks=(data.content||[]).filter(c=>c.type==='text');
-  if(!textBlocks.length) throw new Error('Keine Textantwort erhalten');
+  if(!textBlocks.length) throw new Error(`Keine Textantwort erhalten (Grund: ${data.stop_reason||'unbekannt'}) — ggf. max_tokens zu knapp oder Websuche hat den ganzen Antwortraum verbraucht`);
   const raw=textBlocks[textBlocks.length-1].text;
   const clean=raw.replace(/```json|```/g,'').trim();
   return JSON.parse(clean);
@@ -3189,7 +3217,7 @@ async function callTextAnalysisAPI(userText,maxTokens=1200){
     },
     body:JSON.stringify({
       model:'claude-sonnet-5',
-      max_tokens:maxTokens,
+      max_tokens:Math.max(maxTokens,3000),
       tools:[{type:'web_search_20250305',name:'web_search'}],
       messages:[{role:'user',content:userText}]
     })
@@ -3200,7 +3228,7 @@ async function callTextAnalysisAPI(userText,maxTokens=1200){
   }
   const data=await response.json();
   const textBlocks=(data.content||[]).filter(c=>c.type==='text');
-  if(!textBlocks.length) throw new Error('Keine Textantwort erhalten');
+  if(!textBlocks.length) throw new Error(`Keine Textantwort erhalten (Grund: ${data.stop_reason||'unbekannt'}) — ggf. max_tokens zu knapp oder Websuche hat den ganzen Antwortraum verbraucht`);
   const raw=textBlocks[textBlocks.length-1].text;
   const clean=raw.replace(/```json|```/g,'').trim();
   return JSON.parse(clean);
@@ -3689,6 +3717,116 @@ function renderNutrientBadges(){
       <div class="gutty-badge-icon">${b.icon}</div>
       <div class="gutty-badge-label">${b.label}</div>
     </div>`).join('');
+}
+
+// ══════════════════════════════════════════════════════════════════════════
+//  ERNÄHRUNGS-TESTS — automatische Trigger-Erkennung in bestehenden Einträgen,
+//  statistischer Vergleich (kein API-Key nötig, läuft komplett lokal)
+// ══════════════════════════════════════════════════════════════════════════
+function toggleFoodTestCreator(){
+  const box=document.getElementById('foodTestCreator');
+  if(!box) return;
+  const opening=box.style.display==='none';
+  box.style.display=opening?'block':'none';
+  if(opening){ const inp=document.getElementById('foodTestKeyword'); if(inp){ inp.value=''; inp.focus(); } }
+}
+function createFoodTest(){
+  const inp=document.getElementById('foodTestKeyword');
+  const keyword=(inp&&inp.value||'').trim();
+  if(!keyword){ toast('❗ Bitte ein Stichwort eingeben'); return; }
+  if(!db.foodTests) db.foodTests=[];
+  if(db.foodTests.some(t=>t.keyword.toLowerCase()===keyword.toLowerCase())){ toast('❗ Test dafür läuft schon'); return; }
+  db.foodTests.push({id:Date.now(),keyword,startDate:todayKey(),active:true});
+  save();
+  toggleFoodTestCreator();
+  renderFoodTests();
+  toast('✅ Test gestartet — einfach normal weiter eintragen');
+}
+function removeFoodTest(id){
+  if(!db.foodTests) return;
+  db.foodTests=db.foodTests.filter(t=>t.id!==id);
+  save();
+  renderFoodTests();
+}
+function computeFoodTestStats(test){
+  const days=[];
+  let d=new Date(test.startDate+'T00:00:00');
+  const today=swissTodayAsLocalDate();
+  while(d<=today){ days.push(dateKeyFromDate(d)); d.setDate(d.getDate()+1); }
+  const withDays=[], withoutDays=[];
+  days.forEach(dk=>{
+    const entries=(db.entries||[]).filter(e=>e.date===dk);
+    if(!entries.length) return; // Tag ohne Einträge -> nicht auswertbar
+    const hasTrigger=entries.some(e=>{
+      const names=(e.aiAnalysis&&e.aiAnalysis.lebensmittel)?e.aiAnalysis.lebensmittel.map(x=>x.name).join(' '):'';
+      const txt=((e.food||'')+' '+names).toLowerCase();
+      return txt.includes(test.keyword.toLowerCase());
+    });
+    (hasTrigger?withDays:withoutDays).push(dk);
+  });
+  function statsFor(dayList){
+    const stoolVals=[], blaehVals=[], energieVals=[];
+    dayList.forEach(dk=>{
+      const day=(db.dayData||{})[dk];
+      if(day&&Array.isArray(day.stuhlgang)) day.stuhlgang.forEach(s=>{
+        if(s.skala!=null) stoolVals.push(s.skala);
+        if(s.blaehbauch>1) blaehVals.push(s.blaehbauch);
+        if(s.blaehungen>1) blaehVals.push(s.blaehungen);
+      });
+      if(day&&day.energieLevel!=null) energieVals.push(day.energieLevel);
+    });
+    const avg=arr=>arr.length?Math.round(arr.reduce((a,b)=>a+b,0)/arr.length*10)/10:null;
+    return {days:dayList.length,avgStool:avg(stoolVals),avgBlaeh:avg(blaehVals),avgEnergie:avg(energieVals),stoolCount:stoolVals.length};
+  }
+  return {with:statsFor(withDays),without:statsFor(withoutDays)};
+}
+function foodTestVerdict(stats,bristolActive){
+  const w=stats.with, wo=stats.without;
+  if(w.days<2||wo.days<2) return {text:'Noch zu wenige Tage in einer der beiden Gruppen — mind. 2-3 Tage pro Gruppe empfohlen, bevor man dem Ergebnis trauen kann.',warn:true};
+  if(w.avgStool==null||wo.avgStool==null) return {text:'Noch keine Stuhlgang-Einträge in beiden Gruppen vorhanden — für einen Vergleich werden Werte auf beiden Seiten benötigt.',warn:true};
+  const diff=Math.round((w.avgStool-wo.avgStool)*10)/10;
+  const direction=bristolActive
+    ? (diff>0?'weicher/lockerer':(diff<0?'fester':'unverändert'))
+    : (diff<0?'weicher':(diff>0?'fester':'unverändert'));
+  if(Math.abs(diff)<0.4) return {text:`Kein deutlicher Unterschied erkennbar (Δ ${Math.abs(diff)}) — auf Basis der bisherigen Daten kein klarer Zusammenhang.`,warn:false};
+  return {text:`An Tagen MIT dem Stichwort war der Stuhlgang im Schnitt ${direction} (Δ ${Math.abs(diff)} auf der Skala). Das ist ein Hinweis, kein Beweis — am aussagekräftigsten wird es mit mehr Tagen pro Gruppe.`,warn:false};
+}
+function renderFoodTests(){
+  const list=document.getElementById('foodTestsList');
+  if(!list) return;
+  const tests=db.foodTests||[];
+  if(!tests.length){ list.innerHTML=''; return; }
+  list.innerHTML=tests.map(test=>{
+    const stats=computeFoodTestStats(test);
+    const bristolActive=isBristolActive(todayKey());
+    const verdict=foodTestVerdict(stats,bristolActive);
+    const stoolUnit=bristolActive?'Bristol-Typ':'Skala';
+    return `
+    <div class="food-test-card">
+      <div class="food-test-header">
+        <span class="food-test-title">🔍 "${test.keyword}"</span>
+        <button type="button" class="food-test-del" onclick="removeFoodTest(${test.id})">✕</button>
+      </div>
+      <div class="food-test-meta">Läuft seit ${formatShortDate(test.startDate)} · automatische Erkennung in deinen Mahlzeiten-Einträgen</div>
+      <div class="food-test-compare">
+        <div class="food-test-col with">
+          <div class="food-test-col-label">Mit "${test.keyword}"</div>
+          <div class="food-test-stat"><span>Tage</span><b>${stats.with.days}</b></div>
+          <div class="food-test-stat"><span>Ø ${stoolUnit}</span><b>${stats.with.avgStool!=null?stats.with.avgStool:'–'}</b></div>
+          <div class="food-test-stat"><span>Ø Blähung</span><b>${stats.with.avgBlaeh!=null?stats.with.avgBlaeh:'–'}</b></div>
+          <div class="food-test-stat"><span>Ø Energie</span><b>${stats.with.avgEnergie!=null?stats.with.avgEnergie:'–'}</b></div>
+        </div>
+        <div class="food-test-col without">
+          <div class="food-test-col-label">Ohne "${test.keyword}"</div>
+          <div class="food-test-stat"><span>Tage</span><b>${stats.without.days}</b></div>
+          <div class="food-test-stat"><span>Ø ${stoolUnit}</span><b>${stats.without.avgStool!=null?stats.without.avgStool:'–'}</b></div>
+          <div class="food-test-stat"><span>Ø Blähung</span><b>${stats.without.avgBlaeh!=null?stats.without.avgBlaeh:'–'}</b></div>
+          <div class="food-test-stat"><span>Ø Energie</span><b>${stats.without.avgEnergie!=null?stats.without.avgEnergie:'–'}</b></div>
+        </div>
+      </div>
+      <div class="${verdict.warn?'food-test-warning':'food-test-verdict'}">${verdict.warn?'⏳ ':'📋 '}${verdict.text}</div>
+    </div>`;
+  }).join('');
 }
 function checkYesterdayFocus(){
   const banner=document.getElementById('nutrientFocusBanner');
@@ -4608,7 +4746,7 @@ async function callGuttyChatAPI(userText){
     },
     body:JSON.stringify({
       model:'claude-sonnet-5',
-      max_tokens:500,
+      max_tokens:2000,
       tools:[{type:'web_search_20250305',name:'web_search'}],
       messages:[{role:'user',content:userText}]
     })
@@ -4619,7 +4757,7 @@ async function callGuttyChatAPI(userText){
   }
   const data=await response.json();
   const textBlocks=(data.content||[]).filter(c=>c.type==='text');
-  if(!textBlocks.length) throw new Error('Keine Textantwort erhalten');
+  if(!textBlocks.length) throw new Error(`Keine Textantwort erhalten (Grund: ${data.stop_reason||'unbekannt'}) — ggf. max_tokens zu knapp oder Websuche hat den ganzen Antwortraum verbraucht`);
   return textBlocks[textBlocks.length-1].text.trim();
 }
 function renderGuttyChat(){
