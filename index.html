@@ -118,6 +118,10 @@ body{font-family:'Inter',-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;
 .food-test-stat b{font-family:var(--font-serif)}
 .food-test-verdict{font-size:11.5px;color:var(--text);margin-top:10px;padding-top:10px;border-top:1px solid rgba(18,23,46,.08);line-height:1.5}
 .food-test-warning{font-size:11px;color:var(--gray-dark);font-style:italic;margin-top:8px}
+.ziel-due{font-weight:700}
+.ziel-due.overdue{color:var(--red)}
+.ziel-due.today{color:var(--orange)}
+.ziel-due.soon{color:var(--green)}
 .nutrient-streak-flame{font-size:17px}
 .apikey-hint-icon{font-size:22px;flex-shrink:0}
 .apikey-hint-text{font-size:12px;line-height:1.5;color:var(--text);flex:1}
@@ -1073,6 +1077,15 @@ textarea.form-input{min-height:68px;resize:none}
     <div class="profile-field"><label class="form-label">Name</label><input type="text" class="form-input" id="profileName" placeholder="Dein Name" oninput="saveProfile()"></div>
     <div class="profile-field"><label class="form-label">Ziel</label><input type="text" class="form-input" id="profileZiel" placeholder="z.B. Mehr Gemüse, weniger Zucker…" oninput="saveProfile()"></div>
     <div class="profile-field"><label class="form-label">Zeitraum</label><input type="text" class="form-input" id="profileZeitraum" placeholder="z.B. 01.06. – 07.06.2026" oninput="saveProfile()"></div>
+  </div>
+
+  <!-- ZIELE — mit Fälligkeitsdatum -->
+  <div class="card">
+    <div class="card-title" style="color:var(--green)">🎯 Ziele</div>
+    <div id="zieleList"></div>
+    <input type="text" class="form-input" id="newZielText" placeholder="Neues Ziel, z.B. Jungfrau Marathon" style="margin-top:10px">
+    <input type="date" class="form-input" id="newZielDate" style="margin-top:8px">
+    <button type="button" class="btn-primary" style="margin-top:8px" onclick="addZiel()">➕ Ziel hinzufügen</button>
   </div>
 
   <!-- GEWICHT & CARB-ZIEL -->
@@ -2983,7 +2996,7 @@ async function callFoodVisionAPI(base64){
   const key=getAiKey();
   if(!key) throw new Error('NO_KEY');
   const systemPrompt=`Du bist ein sporternährungswissenschaftlich versierter Ernährungsassistent in der Tracking-App eines Langstrecken-Piloten, der für einen Bergmarathon trainiert und zusätzlich Krafttraining macht. Er hat Zöliakie (strikt glutenfrei nötig, bereits Spurenkontamination relevant) und funktionelle Darmbeschwerden mit Low-FODMAP-Ernährung.
-Analysiere das Foto der Mahlzeit. Zerlege die Mahlzeit in ihre einzelnen Lebensmittel/Komponenten und schätze für JEDES einzeln die Menge sowie Makronährstoffe (kcal, Protein, Kohlenhydrate, Fett, Ballaststoffe); ergänze wo sinnvoll erkennbar 1-2 relevante Mikronährstoffe (z.B. Eisen, Calcium, Vitamin C, Natrium) als grobe Schätzung. Nutze die Websuche, um deine Einschätzung an aktueller sporternährungswissenschaftlicher und gastroenterologischer Evidenz zu verankern (z.B. Protein-/Kohlenhydratbedarf rund ums Training, Gluten-Kreuzkontamination, FODMAP-Gehalt typischer Zutaten). Sei präzise und knapp, keine Allgemeinplätze.
+${getZieleContextText()}Analysiere das Foto der Mahlzeit. Zerlege die Mahlzeit in ihre einzelnen Lebensmittel/Komponenten und schätze für JEDES einzeln die Menge sowie Makronährstoffe (kcal, Protein, Kohlenhydrate, Fett, Ballaststoffe); ergänze wo sinnvoll erkennbar 1-2 relevante Mikronährstoffe (z.B. Eisen, Calcium, Vitamin C, Natrium) als grobe Schätzung. Nutze die Websuche, um deine Einschätzung an aktueller sporternährungswissenschaftlicher und gastroenterologischer Evidenz zu verankern (z.B. Protein-/Kohlenhydratbedarf rund ums Training, Gluten-Kreuzkontamination, FODMAP-Gehalt typischer Zutaten). Sei präzise und knapp, keine Allgemeinplätze.
 Antworte AUSSCHLIESSLICH mit einem JSON-Objekt, kein Markdown, kein Text davor/danach, exakt in diesem Format:
 {"lebensmittel":[{"name":"Name des Lebensmittels","menge":"geschätzte Menge, z.B. '150 g'","kalorien":Zahl,"protein_g":Zahl,"kh_g":Zahl,"fett_g":Zahl,"ballaststoffe_g":Zahl_oder_null,"mikros":"1-2 relevante Mikronährstoffe kurz, oder leerer String"}],"beschreibung":"kurze Gesamt-Zusammenfassung der Mahlzeit, Deutsch","kalorien_geschaetzt":Summe_aller_kalorien,"protein_g":Summe_protein_g,"kh_g":Summe_kh_g,"fett_g":Summe_fett_g,"sportziel_fit":"1-2 Sätze: passt die Mahlzeit zum Marathon-/Kraft-Trainingsziel (Timing, Makros)? Basierend auf aktueller Evidenz.","gluten_risiko":"niedrig|mittel|hoch","gluten_hinweis":"kurzer Hinweis auf Zutaten mit Gluten-/Kreuzkontaminationsrisiko oder 'Keine erkennbar'","fodmap_hinweis":"kurzer Hinweis auf hohe-FODMAP-Zutaten oder 'Keine kritischen Zutaten erkennbar'","warnstufe":"niedrig|mittel|hoch","empfehlung":"eine konkrete, kurze Optimierungsempfehlung falls sinnvoll, sonst leerer String"}
 Wichtig: "kalorien_geschaetzt","protein_g","kh_g","fett_g" müssen die Summe der Werte aus "lebensmittel" sein.`;
@@ -3245,6 +3258,73 @@ function loadProfile(){
   updateCarbTargetDisplay();
   loadDrinkGoals();
   renderNutrientStats();
+  renderZiele();
+}
+// ── ZIELE — mit Fälligkeitsdatum ────────────────────────────────────────
+function getZiele(){ if(!db.ziele) db.ziele=[]; return db.ziele; }
+function addZiel(){
+  const textEl=document.getElementById('newZielText');
+  const dateEl=document.getElementById('newZielDate');
+  const text=(textEl.value||'').trim();
+  if(!text){ toast('❗ Bitte einen Zieltext eingeben'); return; }
+  const ziele=getZiele();
+  ziele.push({id:Date.now(),text,dueDate:dateEl.value||null,done:false});
+  save();
+  textEl.value=''; dateEl.value='';
+  renderZiele();
+  toast('✅ Ziel hinzugefügt');
+}
+function toggleZielDone(id){
+  const z=getZiele().find(z=>z.id===id);
+  if(z){ z.done=!z.done; save(); renderZiele(); }
+}
+function removeZiel(id){
+  db.ziele=getZiele().filter(z=>z.id!==id);
+  save();
+  renderZiele();
+}
+function zielDueInfo(dueDate){
+  if(!dueDate) return {text:'',cls:''};
+  const diffDays=Math.round((new Date(dueDate+'T00:00:00')-new Date(todayKey()+'T00:00:00'))/86400000);
+  if(diffDays<0) return {text:`⚠️ überfällig seit ${Math.abs(diffDays)} Tag${Math.abs(diffDays)===1?'':'en'}`,cls:'overdue'};
+  if(diffDays===0) return {text:'🔥 heute fällig',cls:'today'};
+  if(diffDays<=14) return {text:`⏳ in ${diffDays} Tag${diffDays===1?'':'en'} (${formatShortDate(dueDate)})`,cls:'soon'};
+  return {text:`📅 ${formatShortDate(dueDate)}`,cls:''};
+}
+function getZieleContextText(){
+  const ziele=getZiele().filter(z=>!z.done);
+  if(!ziele.length) return '';
+  const lines=ziele.map(z=>{
+    if(!z.dueDate) return `- ${z.text}`;
+    const diffDays=Math.round((new Date(z.dueDate+'T00:00:00')-new Date(todayKey()+'T00:00:00'))/86400000);
+    const when=diffDays<0?`überfällig seit ${Math.abs(diffDays)} Tagen`:diffDays===0?'heute fällig':`in ${diffDays} Tagen, am ${formatShortDate(z.dueDate)}`;
+    return `- ${z.text} (${when})`;
+  });
+  return `\nAktuelle persönliche Ziele des Nutzers, die bei der Einschätzung/Empfehlung berücksichtigt werden sollen:\n${lines.join('\n')}\n`;
+}
+function renderZiele(){
+  const list=document.getElementById('zieleList');
+  if(!list) return;
+  const ziele=getZiele().slice().sort((a,b)=>{
+    if(a.done!==b.done) return a.done?1:-1;
+    if(!a.dueDate&&!b.dueDate) return 0;
+    if(!a.dueDate) return 1;
+    if(!b.dueDate) return -1;
+    return a.dueDate.localeCompare(b.dueDate);
+  });
+  if(!ziele.length){ list.innerHTML='<div style="font-size:12px;color:var(--gray-dark)">Noch keine Ziele erfasst.</div>'; return; }
+  list.innerHTML=ziele.map(z=>{
+    const due=zielDueInfo(z.dueDate);
+    return `
+    <div class="akt-row" style="${z.done?'opacity:.5':''}" onclick="toggleZielDone(${z.id})">
+      <div class="akt-row-icon">${z.done?'✅':'🎯'}</div>
+      <div class="akt-row-info">
+        <span class="akt-row-name" style="${z.done?'text-decoration:line-through':''}">${z.text}</span>
+        <span class="akt-row-meta ziel-due ${due.cls}">${due.text}</span>
+      </div>
+      <button type="button" class="akt-row-del" onclick="event.stopPropagation();removeZiel(${z.id})">−</button>
+    </div>`;
+  }).join('');
 }
 function getDrinkGoals(){
   return db.drinkGoals||{wasser:2.5,tee:2};
@@ -3491,7 +3571,7 @@ async function generateRecipeSuggestions(){
   try{
     const parsed=await callTextAnalysisAPI(
 `Erstelle 2 kurze, alltagstaugliche Rezeptvorschläge für ein ${mealType} für einen Langstrecken-Piloten mit Zöliakie (strikt glutenfrei) und Low-FODMAP-Ernährung, der für einen Bergmarathon trainiert. Bisher heute konsumiert: ca. ${Math.round(consumed.kcal)} kcal, ${Math.round(consumed.p)}g Protein, ${Math.round(consumed.kh)}g KH, ${Math.round(consumed.f)}g Fett — berücksichtige das (z.B. mehr Protein, falls bisher wenig). Nutze die Websuche für aktuelle sporternährungswissenschaftliche Fundierung.
-Antworte AUSSCHLIESSLICH mit JSON: {"vorschlaege":[{"titel":"...","beschreibung":"1 Satz","zutaten":["...","..."],"zubereitung":"2-3 kurze Schritte in einem String","kalorien":Zahl,"protein_g":Zahl,"kh_g":Zahl,"fett_g":Zahl}]}`,1500
+${getZieleContextText()}Antworte AUSSCHLIESSLICH mit JSON: {"vorschlaege":[{"titel":"...","beschreibung":"1 Satz","zutaten":["...","..."],"zubereitung":"2-3 kurze Schritte in einem String","kalorien":Zahl,"protein_g":Zahl,"kh_g":Zahl,"fett_g":Zahl}]}`,1500
     );
     renderRecipeSuggestions(parsed.vorschlaege||[]);
   }catch(err){
@@ -3586,7 +3666,7 @@ async function analyzeNutrientTargets(){
     const carbLine=carbInfo?`- Carbs (Kohlenhydrate): ≈ ${carbInfo.grams} g, täglich (individuell berechnet: ${carbInfo.perKg} g/kg, Modus "${carbInfo.phase}")`:null;
     const parsed=await callTextAnalysisAPI(
 `Du bist Ernährungsberater für einen Langstrecken-Piloten mit Zöliakie (glutenfrei) und Low-FODMAP-Diät, der für einen Bergmarathon trainiert. Schätze anhand der folgenden Angaben realistisch, wie gut er heute (${dateKey}) seine Ernährungsziele erreicht. Gib IMMER eine plausible Schätzung ab, auch ohne exakte Grammangaben — schätze anhand der beschriebenen Lebensmittel und üblichen Portionsgrößen.
-
+${getZieleContextText()}
 Körpergewicht: ${weight?weight+' kg':'unbekannt, nimm 80 kg an'}
 Trainingsdauer heute: ${trainingMin} Min.
 Wasseraufnahme heute (bereits erfasst): ${waterLiters} L
@@ -3861,7 +3941,7 @@ async function generateShoppingList(){
   try{
     const parsed=await callTextAnalysisAPI(
 `Erstelle eine übersichtliche Einkaufsliste für einen Langstrecken-Piloten mit Zöliakie (strikt glutenfrei) und Low-FODMAP-Ernährung, der für einen Bergmarathon trainiert. Grundlage sind diese Lebensmittel, die er nachweislich gut verträgt (aus bisherigen Mahlzeiten-Analysen mit niedrigem Gluten- und FODMAP-Risiko): ${foodList.join(', ')}. Ergänze sinnvoll passende glutenfreie/Low-FODMAP-Grundnahrungsmittel und Sportnahrung dazu, aber der Fokus soll klar auf den bewährten, bereits vertragenen Lebensmitteln liegen — keine riskanten Neuvorschläge. Kategorisiere sinnvoll (z.B. Obst & Gemüse, Getreide & Backwaren, Protein, Milchalternativen, Sportnahrung/Sonstiges).
-Antworte AUSSCHLIESSLICH mit JSON: {"kategorien":[{"name":"...","artikel":["...","..."]}]}`,1500
+${getZieleContextText()}Antworte AUSSCHLIESSLICH mit JSON: {"kategorien":[{"name":"...","artikel":["...","..."]}]}`,1500
     );
     renderShoppingList(parsed.kategorien||[]);
   }catch(err){
@@ -4331,7 +4411,7 @@ async function runDailyAnalysis(){
   try{
     const parsed=await callTextAnalysisAPI(
 `Analysiere ${periodLabel} eines Langstrecken-Piloten, der für einen Bergmarathon und Krafttraining trainiert, mit Zöliakie (strikt glutenfrei) und funktionellen Darmbeschwerden (Low-FODMAP-Ernährung). Bewerte anhand der folgenden strukturierten Tracking-Daten (JSON) die Gesamtqualität, erkennbare Muster, Zusammenhang mit gemeldeten Symptomen und den Fit zum Trainingsziel. Gib 1-3 konkrete, umsetzbare Empfehlungen. Nutze wenn hilfreich die Websuche für aktuelle Evidenz.
-Antworte AUSSCHLIESSLICH mit JSON: {"gesamtbewertung":"1-2 Sätze Gesamtfazit","muster":"kurze Beobachtung zu Mustern/Auffälligkeiten oder leerer String","sportziel_tagesfazit":"1 Satz zum Trainings-Fit","empfehlungen":["kurzer Tipp 1","kurzer Tipp 2"]}
+${getZieleContextText()}Antworte AUSSCHLIESSLICH mit JSON: {"gesamtbewertung":"1-2 Sätze Gesamtfazit","muster":"kurze Beobachtung zu Mustern/Auffälligkeiten oder leerer String","sportziel_tagesfazit":"1 Satz zum Trainings-Fit","empfehlungen":["kurzer Tipp 1","kurzer Tipp 2"]}
 
 Trackingdaten: ${JSON.stringify(summary)}`
     );
@@ -4789,7 +4869,7 @@ async function sendGuttyChat(){
   try{
     const raw=await callGuttyChatAPI(
 `Du bist Gutty, ein knuffiges, warmherziges, motivierendes Maskottchen in einer Ernährungs-App für einen Langstrecken-Piloten mit Zöliakie (strikt glutenfrei) und Low-FODMAP-Ernährung, der für einen Bergmarathon trainiert. Antworte kurz (maximal 3 Sätze), herzlich und in Du-Form — wie ein liebevoller Begleiter, nicht wie ein klinischer Assistent. Nutze die Websuche, wenn es um Ernährungs- oder Sportfragen geht, für fundierte Antworten. Antworte als reiner Text, kein JSON, kein Markdown.
-Kontext zum heutigen Tag: ${JSON.stringify(context)}
+${getZieleContextText()}Kontext zum heutigen Tag: ${JSON.stringify(context)}
 Frage: "${q}"`
     );
     db.guttyChat[db.guttyChat.length-1]={role:'gutty',text:raw.replace(/</g,'&lt;')};
@@ -4858,7 +4938,7 @@ async function generateReport(){
   try{
     const parsed=await callTextAnalysisAPI(
 `Erstelle einen strukturierten Ernährungs- und Gesundheitsbericht für einen Langstrecken-Piloten, der für einen Bergmarathon und Krafttraining trainiert, mit Zöliakie (strikt glutenfrei) und funktionellen Darmbeschwerden (Low-FODMAP-Ernährung). Grundlage sind die folgenden Tracking-Daten (JSON) für den Zeitraum ${from} bis ${to}. Nutze die Websuche, um Einschätzungen an aktueller sporternährungswissenschaftlicher und gastroenterologischer Evidenz zu verankern.
-Antworte AUSSCHLIESSLICH mit JSON: {"uebersicht":"2-3 Sätze Gesamteinordnung des Zeitraums","ernaehrungsmuster":"Beobachtungen zu wiederkehrenden Mustern (Zeiten, Zusammensetzung, Regelmäßigkeit)","gluten_fodmap_vorkommnisse":"Zusammenfassung erkannter Risiko-Mahlzeiten und Häufigkeit","symptom_korrelation":"Zusammenhänge zwischen Mahlzeiten/Zutaten und gemeldeten Symptomen, falls erkennbar, sonst 'Keine klaren Zusammenhänge erkennbar'","schlaf_stress_trend":"Kurztrend zu Schlaf und Stress im Zeitraum","sportziel_fazit":"Einschätzung, wie gut die Ernährung insgesamt das Marathon-/Krafttraining unterstützt hat","empfehlungen":["konkrete Empfehlung 1","konkrete Empfehlung 2","konkrete Empfehlung 3"]}
+${getZieleContextText()}Antworte AUSSCHLIESSLICH mit JSON: {"uebersicht":"2-3 Sätze Gesamteinordnung des Zeitraums","ernaehrungsmuster":"Beobachtungen zu wiederkehrenden Mustern (Zeiten, Zusammensetzung, Regelmäßigkeit)","gluten_fodmap_vorkommnisse":"Zusammenfassung erkannter Risiko-Mahlzeiten und Häufigkeit","symptom_korrelation":"Zusammenhänge zwischen Mahlzeiten/Zutaten und gemeldeten Symptomen, falls erkennbar, sonst 'Keine klaren Zusammenhänge erkennbar'","schlaf_stress_trend":"Kurztrend zu Schlaf und Stress im Zeitraum","sportziel_fazit":"Einschätzung, wie gut die Ernährung insgesamt das Marathon-/Krafttraining unterstützt hat","ziele_fortschritt":"kurze Einschätzung, wie die Daten im Zeitraum zu den genannten persönlichen Zielen passen, oder leerer String falls keine Ziele hinterlegt sind","empfehlungen":["konkrete Empfehlung 1","konkrete Empfehlung 2","konkrete Empfehlung 3"]}
 
 Trackingdaten: ${JSON.stringify(payload)}`, 2200
     );
@@ -4882,6 +4962,7 @@ function renderReport(p,from,to){
     ${section('🩺 Symptom-Zusammenhänge',p.symptom_korrelation)}
     ${section('😴 Schlaf &amp; Stress',p.schlaf_stress_trend)}
     ${section('🏃 Sportziel-Fazit',p.sportziel_fazit)}
+    ${section('🎯 Fortschritt zu deinen Zielen',p.ziele_fortschritt)}
     ${empf}
     <button class="btn-secondary" onclick="copyReportText()" style="margin-top:4px">📋 Bericht kopieren</button>`;
   window._lastReport={p,from,to};
